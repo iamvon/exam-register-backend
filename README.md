@@ -1,3 +1,3 @@
 ### Start server
 
-node app/server.js
+```node app/server.js```
