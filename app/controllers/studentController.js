@@ -31,7 +31,7 @@ StudentController.addStudent = function (req, res) {
                 // Creating account for new student 
                 axios.post('/api/signup', {
                     username: req.body.student_id,
-                    password: req.body.dob.replace(/-/g, ''),
+                    password: req.body.date_birth.replace(/-/g, ''),
                     email: req.body.email,
                 }, {
                     proxy: {
