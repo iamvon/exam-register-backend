@@ -9,7 +9,7 @@ let config = require('../config'),
 
 let ExamRoomDefinition = {
     exam_room_id: {
-        type: Sequelize.STRING,
+        type: Sequelize.UUID,
         unique: true,
         allowNull: false,
         primaryKey: true,

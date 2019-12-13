@@ -48,7 +48,7 @@ null
 }
 ```
 
-### 3. http://localhost:8080/api/student/add
+### 3. http://localhost:8080/api/student/create
 #### Headers:
 ```
 Authorization:Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImFkbWluIiwiaWF0IjoxNTc1OTg3ODM1LCJleHAiOjE1NzU5ODk2MzV9.7aveV4z_518rfgODfZgeBzIJjH18Bv4GcYZ4HpA1ThI
@@ -69,7 +69,7 @@ Authorization:Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImFkbW
 => __Response__: 
 ```
 {
-    "message": "Student 17012350 added!"
+    "message": "Student 17012350 created!"
 }
 ```
 

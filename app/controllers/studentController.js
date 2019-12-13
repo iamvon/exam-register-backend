@@ -1,6 +1,7 @@
 'use strict'
 
-let Student = require('../models/student'),
+let Sequelize = require('sequelize'),
+    Student = require('../models/student'),
     User = require('../models/user'),
     db = require('../services/database'),
     axios = require('axios'),
@@ -8,10 +9,11 @@ let Student = require('../models/student'),
 
 let StudentController = {}
 
-StudentController.addStudent = function (req, res) {
+StudentController.createStudent = function (req, res) {
     db.sync().then(function () {
         let newStudent = {
             student_id: req.body.student_id,
+            avatar_url: req.body.avatar_url,
             name: req.body.name,
             email: req.body.email,
             gender: req.body.gender,
@@ -26,7 +28,7 @@ StudentController.addStudent = function (req, res) {
                 return
             }
 
-            // Adding new student
+            // createing new student
             return Student.create(newStudent).then(function () {
                 // Creating account for new student 
                 axios.post('/api/signup', {
@@ -46,7 +48,85 @@ StudentController.addStudent = function (req, res) {
                         console.log(error);
                     });
 
-                res.status(201).json({ message: `Student ${req.body.student_id} added!` });
+                res.status(201).json({ message: `Student ${req.body.student_id} created!` });
+            })
+        })
+    })
+}
+
+StudentController.getAllStudent = function (req, res) {
+    db.sync().then(function () {
+        Student.findAll({}).then(function (data) {
+            res.status(200).json({
+                status: 'success',
+                data: data,
+                message: "Get all Students from database"
+            })
+        }).catch(function (err) {
+            return next(err)
+        })
+    })
+}
+
+
+StudentController.getStudentById = function (req, res) {
+    let student_id = req.params.student_id
+    db.sync().then(function () {
+        Student.findOne({ where: { student_id: student_id } }).then(function (data) {
+            if (!data) {
+                res.status(403).json({ message: `Student ${student_id} not exist!` })
+                return
+            }
+
+            res.status(200).json({
+                status: 'success',
+                data: data,
+                message: `Get subject ${student_id} from database`
+            })
+        }).catch(function (err) {
+            return next(err)
+        })
+    })
+}
+
+StudentController.updateStudentById = function (req, res) {
+    let student_id = req.params.student_id
+    let updateStudent = {
+        subject_name: req.body.subject_name,
+        student_id: req.body.student_id
+    }
+    db.sync().then(function () {
+        Student.findOne({ where: { student_id: student_id } }).then(function (data) {
+            if (!data) {
+                res.status(403).json({ message: `Student ${student_id} not exist!` })
+                return
+            }
+
+            data.update({
+                subject_name: updateStudent.subject_name,
+                student_id: updateStudent.student_id,
+                updated_at: Sequelize.literal('CURRENT_TIMESTAMP')
+            }).then(function () {
+                res.status(200).json({
+                    status: 'success',
+                    message: `Update subject ${student_id} successfully`
+                })
+            })
+        })
+    })
+}
+
+StudentController.deleteStudentById = function (req, res) {
+    let student_id = req.params.student_id
+    db.sync().then(function () {
+        Student.findOne({ where: { student_id: student_id } }).then(function (data) {
+            if (!data) {
+                res.status(403).json({ message: `Student ${student_id} not exist!` })
+                return
+            }
+
+            return Student.destroy({ where: { student_id: student_id } }).then(function () {
+                res.status(201).json({ message: `Student ${student_id} deleted!` })
             })
         })
     })

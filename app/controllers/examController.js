@@ -1,42 +1,111 @@
 'use strict'
 
-let Exam = require('../models/exam'),
+let Sequelize = require('sequelize'),
+    Exam = require('../models/exam'),
     db = require('../services/database')
+const { uuid } = require('uuidv4')
 
 let ExamController = {}
 
-ExamController.addExam = function (req, res) {
+ExamController.createNewExam = function (req, res) {
     db.sync().then(function () {
         let newExam = {
-            exam_id: req.body.exam_id,
+            exam_id: uuid(),
             exam_name: req.body.exam_name,
-            school_year: req.body.school_year 
+            school_year: req.body.school_year
         }
 
-        Exam.findOne({ where: { exam_id: req.body.exam_id } }).then(function (exam) {
+        Exam.findOne({ where: { exam_name: req.body.exam_name, school_year: req.body.school_year } }).then(function (exam) {
             if (exam) {
-                res.status(403).json({ message: `Exam ${req.body.exam_name} - ${req.body.exam_id} already exists!` })
+                res.status(403).json({ message: `Exam ${req.body.exam_name} - ${req.body.school_year} already exists!` })
                 return
             }
 
-            // Adding new exam
+            // createing new exam
             return Exam.create(newExam).then(function () {
-                res.status(201).json({ message: `Exam ${req.body.exam_name} - ${req.body.exam_id} added!` });
+                res.status(201).json({
+                    status: 'success',
+                    message: `Exam ${req.body.exam_name} - ${req.body.school_year} created!`,
+                    exam_id: newExam.exam_id
+                });
             })
         })
     })
 }
 
-ExamController.deleteExam = function (req, res) {
+ExamController.getAllExam = function (req, res) {
     db.sync().then(function () {
-        Exam.findOne({ where: { exam_id: req.body.exam_id } }).then(function (exam) {
+        Exam.findAll({}).then(function (data) {
+            res.status(200).json({
+                status: 'success',
+                data: data,
+                message: "Get all exams from database"
+            })
+        }).catch(function (err) {
+            return next(err)
+        })
+    })
+}
+
+
+ExamController.getExamById = function (req, res) {
+    let exam_id = req.params.exam_id
+    db.sync().then(function () {
+        Exam.findOne({ where: { exam_id: exam_id } }).then(function (exam) {
             if (!exam) {
-                res.status(403).json({ message: `Exam ${req.body.exam_name} - ${req.body.exam_id} not exist!` })
+                res.status(403).json({ message: `Exam ${exam_id} not exist!` })
                 return
             }
 
-            return Exam.destroy({ where: { exam_id: req.body.exam_id } }).then(function () {
-                res.status(201).json({ message: `Exam ${req.body.exam_name} - ${req.body.exam_id} deleted!` })
+            res.status(200).json({
+                status: 'success',
+                data: exam,
+                message: `Get exam ${exam_id} from database`
+            })
+        }).catch(function (err) {
+            return next(err)
+        })
+    })
+}
+
+ExamController.updateExamById = function (req, res) {
+    let exam_id = req.params.exam_id
+    let updateExam = {
+        exam_name: req.body.exam_name,
+        school_year: req.body.school_year
+    }
+    db.sync().then(function () {
+        Exam.findOne({ where: { exam_id: exam_id } }).then(function (exam) {
+            if (!exam) {
+                res.status(403).json({ message: `Exam ${exam_id} not exist!` })
+                return
+            }
+
+            exam.update({
+                exam_name: updateExam.exam_name,
+                school_year: updateExam.school_year,
+                updated_at: Sequelize.literal('CURRENT_TIMESTAMP')
+            }).then(function () {
+                res.status(200).json({
+                    status: 'success',
+                    message: `Update exam ${exam_id} successfully`
+                })
+            })
+        })
+    })
+}
+
+ExamController.deleteExamById = function (req, res) {
+    let exam_id = req.params.exam_id
+    db.sync().then(function () {
+        Exam.findOne({ where: { exam_id: exam_id } }).then(function (exam) {
+            if (!exam) {
+                res.status(403).json({ message: `Exam ${exam_id} not exist!` })
+                return
+            }
+
+            return Exam.destroy({ where: { exam_id: exam_id } }).then(function () {
+                res.status(201).json({ message: `Exam ${exam_id} deleted!` })
             })
         })
     })

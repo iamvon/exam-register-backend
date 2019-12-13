@@ -8,8 +8,8 @@ let config = require('../config'),
     Student = require('../models/student')
 
 let StudentSubjectDefinition = {
-    student_id: {
-        type: Sequelize.STRING,
+    student_subject_id: {
+        type: Sequelize.UUID,
         unique: true,
         allowNull: false,
         primaryKey: true
@@ -33,6 +33,5 @@ let StudentSubjectDefinition = {
 }
 
 let StudentSubject = db.define('student_subject', StudentSubjectDefinition)
-StudentSubject.hasMany(Student, { foreignKey: 'student_id' })
 
 module.exports = StudentSubject

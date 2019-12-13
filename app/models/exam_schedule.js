@@ -8,8 +8,8 @@ let config = require('../config'),
     StudentSubject = require('../models/student_subject')
 
 let ExamScheduleDefinition = {
-    id: {
-        type: Sequelize.STRING,
+    exam_schedule_id: {
+        type: Sequelize.UUID,
         unique: true,
         allowNull: false,
         primaryKey: true,

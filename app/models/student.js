@@ -4,7 +4,8 @@ let Sequelize = require('sequelize'),
     bcrypt = require('bcrypt')
 
 let config = require('../config'),
-    db = require('../services/database')
+    db = require('../services/database'),
+    StudentSubject = require('../models/student_subject')
 // let User = require('../models/user')
 
 let StudentDefinition = {
@@ -15,6 +16,11 @@ let StudentDefinition = {
         primaryKey: true
     },
     
+    avatar_url: {
+        type: Sequelize.STRING,
+        allowNull: false
+    },
+
     name: {
         type: Sequelize.STRING,
         allowNull: false
@@ -58,6 +64,7 @@ let StudentDefinition = {
 }
 
 let Student = db.define('student', StudentDefinition)
+Student.hasMany(StudentSubject, { foreignKey: 'student_id' })
 // Student.hasOne(User, { foreignKey: 'username'})
 
 module.exports = Student

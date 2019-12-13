@@ -9,7 +9,7 @@ let config = require('../config'),
 
 let ExamShiftDefinition = {
     exam_shift_id: {
-        type: Sequelize.STRING,
+        type: Sequelize.UUID,
         unique: true,
         allowNull: false,
         primaryKey: true,

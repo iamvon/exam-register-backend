@@ -3,7 +3,8 @@
 const { uuid } = require('uuidv4')
 let jwt = require('jsonwebtoken')
 
-let config = require('../config'),
+let Sequelize = require('sequelize'),
+    config = require('../config'),
     db = require('../services/database'),
     User = require('../models/user')
 
@@ -59,7 +60,7 @@ AuthController.authenticateUser = function (req, res) {
                         var token = jwt.sign(
                             { username: user.username },
                             config.keys.secret,
-                            { expiresIn: '30m' }
+                            { expiresIn: '60000m' }
                         )
 
                         res.json({
