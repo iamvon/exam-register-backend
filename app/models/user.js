@@ -7,11 +7,17 @@ let config = require('../config'),
     db = require('../services/database')
 
 let UserDefinition = {
-    id: {
+    user_id: {
         type: Sequelize.UUID,
         unique: true,
         allowNull: false,
         primaryKey: true,
+    },
+
+    avatar_url: {
+        type: Sequelize.STRING,
+        allowNull: true,
+        defaultValue: '',
     },
 
     username: {

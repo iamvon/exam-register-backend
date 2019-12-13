@@ -18,7 +18,8 @@ let StudentDefinition = {
     
     avatar_url: {
         type: Sequelize.STRING,
-        allowNull: false
+        allowNull: true,
+        defaultValue: '',
     },
 
     name: {

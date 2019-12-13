@@ -17,7 +17,7 @@ AuthController.signUp = function (req, res) {
     } else {
         db.sync().then(function () {
             let newUser = {
-                id: uuid(),
+                user_id: uuid(),
                 username: req.body.username,
                 password: req.body.password,
                 email: req.body.email,

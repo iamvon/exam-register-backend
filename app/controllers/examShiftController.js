@@ -18,7 +18,7 @@ ExamShiftController.createNewExamShift = function (req, res) {
 
         ExamShift.findOne({ where: { exam_id: req.body.exam_id, start_time: req.body.start_time, end_time: req.body.end_time } }).then(function (data) {
             if (data) {
-                res.status(403).json({ message: `Exam shift ${req.body.Shift} - ${req.body.start_time} - ${req.body.end_time} already exists!` })
+                res.status(403).json({ message: `Exam shift from ${req.body.start_time} to ${req.body.end_time} already exists!` })
                 return
             }
 
@@ -26,7 +26,7 @@ ExamShiftController.createNewExamShift = function (req, res) {
             return ExamShift.create(newExamShift).then(function () {
                 res.status(201).json({
                     status: 'success',
-                    message: `Exam shift ${req.body.Shift} - ${req.body.start_time} - ${req.body.end_time} created!`,
+                    message: `New exam shift from ${req.body.start_time} to ${req.body.end_time} created!`,
                     exam_shift_id: newExamShift.exam_shift_id
                 });
             })

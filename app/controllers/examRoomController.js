@@ -80,6 +80,7 @@ ExamRoomController.updateExamRoomById = function (req, res) {
         computer_max_amount: req.body.computer_max_amount,
         computer_amount: req.body.computer_amount
     }
+    
     db.sync().then(function () {
         ExamRoom.findOne({ where: { exam_room_id: exam_room_id } }).then(function (data) {
             if (!data) {
