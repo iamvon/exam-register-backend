@@ -18,12 +18,9 @@ ExamController.createNewExam = function (req, res) {
         Exam.findOne({ where: { exam_name: req.body.exam_name, school_year: req.body.school_year } }).then(function (exam) {
             if (exam) {
                 res.status(403).json({
-                    data: {
-                        success: false,
-                        data: {},
-                        message: `Exam ${req.body.exam_name} - ${req.body.school_year} already exists!`
-                    },
-                    status: 403
+                    success: false,
+                    data: {},
+                    message: `Exam ${req.body.exam_name} - ${req.body.school_year} already exists!`
                 })
                 return
             }
@@ -31,12 +28,9 @@ ExamController.createNewExam = function (req, res) {
             // createing new exam
             return Exam.create(newExam).then(function () {
                 res.status(201).json({
-                    data: {
-                        success: true,
-                        data: { exam_id: newExam.exam_id },
-                        message: `Exam ${req.body.exam_name} - ${req.body.school_year} created!`
-                    },
-                    status: 201
+                    success: true,
+                    data: { exam_id: newExam.exam_id },
+                    message: `Exam ${req.body.exam_name} - ${req.body.school_year} created!`
                 });
             })
         })
@@ -47,12 +41,9 @@ ExamController.getAllExam = function (req, res) {
     db.sync().then(function () {
         Exam.findAll({}).then(function (data) {
             res.status(200).json({
-                data: {
-                    success: true,
-                    data: data,
-                    message: "Get all exams from database"
-                },
-                status: 200
+                success: true,
+                data: data,
+                message: "Get all exams from database"
             })
         }).catch(function (err) {
             return next(err)
@@ -67,23 +58,17 @@ ExamController.getExamById = function (req, res) {
         Exam.findOne({ where: { exam_id: exam_id } }).then(function (data) {
             if (!data) {
                 res.status(403).json({
-                    data: {
-                        success: false,
-                        data: {},
-                        message: `Exam ${exam_id} not exist!`
-                    },
-                    status: 403
+                    success: false,
+                    data: {},
+                    message: `Exam ${exam_id} not exist!`
                 })
                 return
             }
 
             res.status(200).json({
-                data: {
-                    success: true,
-                    data: data,
-                    message: `Get exam ${exam_id} from database`
-                },
-                status: 200
+                success: true,
+                data: data,
+                message: `Get exam ${exam_id} from database`
             })
         }).catch(function (err) {
             return next(err)
@@ -101,12 +86,9 @@ ExamController.updateExamById = function (req, res) {
         Exam.findOne({ where: { exam_id: exam_id } }).then(function (exam) {
             if (!exam) {
                 res.status(403).json({
-                    data: {
-                        success: false,
-                        data: {},
-                        message: `Exam ${exam_id} not exist!`
-                    },
-                    status: 403
+                    success: false,
+                    data: {},
+                    message: `Exam ${exam_id} not exist!`
                 })
                 return
             }
@@ -117,12 +99,9 @@ ExamController.updateExamById = function (req, res) {
                 updated_at: Sequelize.literal('CURRENT_TIMESTAMP')
             }).then(function () {
                 res.status(200).json({
-                    data: {
-                        success: true,
-                        data: {},
-                        message: `Update exam ${exam_id} successfully`
-                    },
-                    status: 200
+                    success: true,
+                    data: {},
+                    message: `Update exam ${exam_id} successfully`
                 })
             })
         })
@@ -135,24 +114,18 @@ ExamController.deleteExamById = function (req, res) {
         Exam.findOne({ where: { exam_id: exam_id } }).then(function (data) {
             if (!data) {
                 res.status(403).json({
-                    data: {
-                        success: false,
-                        data: {},
-                        message: `Exam ${exam_id} not exist!`
-                    },
-                    status: 403
+                    success: false,
+                    data: {},
+                    message: `Exam ${exam_id} not exist!`
                 })
                 return
             }
 
             return Exam.destroy({ where: { exam_id: exam_id } }).then(function () {
                 res.status(200).json({
-                    data: {
-                        success: true,
-                        data: {},
-                        message: `Exam ${exam_id} deleted!`
-                    },
-                    status: 200
+                    success: true,
+                    data: {},
+                    message: `Exam ${exam_id} deleted!`
                 })
             })
         })

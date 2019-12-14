@@ -10,14 +10,11 @@ UserController.getUserIdByStudentId = function (req, res) {
     let student_id = req.params.student_id
     User.findOne({ where: { username: student_id } }).then(function (data) {
         res.status(200).json({
+            success: true,
             data: {
-                success: true,
-                data: {
-                    user_id: data.user_id,
-                },
-                message: "Get user ID by student ID"
+                user_id: data.user_id,
             },
-            status: 200
+            message: "Get user ID by student ID"
         })
     }).catch(function (err) {
         return next(err)
@@ -28,12 +25,9 @@ UserController.getAllUser = function (req, res) {
     db.sync().then(function () {
         User.findAll({}).then(function (data) {
             res.status(200).json({
-                data: {
-                    success: true,
-                    data: data,
-                    message: "Get all users from database"
-                },
-                status: 200
+                success: true,
+                data: data,
+                message: "Get all users from database"
             })
         }).catch(function (err) {
             return next(err)
@@ -47,23 +41,17 @@ UserController.getUserById = function (req, res) {
         User.findOne({ where: { user_id: user_id } }).then(function (data) {
             if (!data) {
                 res.status(403).json({
-                    data: {
-                        success: false,
-                        data: {},
-                        message: `User ${user_id} not exist!`
-                    },
-                    status: 403
+                    success: false,
+                    data: {},
+                    message: `User ${user_id} not exist!`
                 })
                 return
             }
 
             res.status(200).json({
-                data: {
-                    success: true,
-                    data: data,
-                    message: `Get user ${user_id} from database`
-                },
-                status: 200
+                success: true,
+                data: data,
+                message: `Get user ${user_id} from database`
             })
         }).catch(function (err) {
             return next(err)
@@ -84,12 +72,9 @@ UserController.updateUserById = function (req, res) {
         User.findOne({ where: { user_id: user_id } }).then(function (data) {
             if (!data) {
                 res.status(403).json({
-                    data: {
-                        success: false,
-                        data: {},
-                        message: `User ${user_id} not exist!`
-                    },
-                    status: 403
+                    success: false,
+                    data: {},
+                    message: `User ${user_id} not exist!`
                 })
                 return
             }
@@ -102,12 +87,9 @@ UserController.updateUserById = function (req, res) {
                 updated_at: Sequelize.literal('CURRENT_TIMESTAMP')
             }).then(function () {
                 res.status(200).json({
-                    data: {
-                        success: true,
-                        data: {},
-                        message: `Update user ${user_id} successfully`
-                    },
-                    status: 200
+                    success: true,
+                    data: {},
+                    message: `Update user ${user_id} successfully`
                 })
             })
         })

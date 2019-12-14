@@ -17,12 +17,9 @@ let refreshTokens = {}
 AuthController.signUp = function (req, res) {
     if (!req.body.username || !req.body.password) {
         res.status(404).json({
-            data: {
-                success: false,
-                data: {},
-                message: 'Please provide an username and a password.'
-            },
-            status: 404
+            success: false,
+            data: {},
+            message: 'Please provide an username and a password.'
         })
     } else {
         db.sync().then(function () {
@@ -37,12 +34,9 @@ AuthController.signUp = function (req, res) {
             User.findOne({ where: { username: req.body.username } }).then(function (user) {
                 if (user) {
                     res.status(403).json({
-                        data: {
-                            success: false,
-                            data: {},
-                            message: `Username ${req.body.username} already exists!`
-                        },
-                        status: 403
+                        success: false,
+                        data: {},
+                        message: `Username ${req.body.username} already exists!`
                     })
                     return
                 }
@@ -50,12 +44,9 @@ AuthController.signUp = function (req, res) {
                 return User.create(newUser).then(function () {
                     res.status(201).json(
                         {
-                            data: {
-                                success: true,
-                                data: {},
-                                message: `New account created for user: ${newUser.username}`
-                            },
-                            status: 201
+                            success: true,
+                            data: {},
+                            message: `New account created for user: ${newUser.username}`
                         }
                     );
                 })
@@ -71,12 +62,9 @@ AuthController.signUp = function (req, res) {
 AuthController.login = function (req, res) {
     if (!req.body.username || !req.body.password) {
         res.status(404).json({
-            data: {
-                success: false,
-                data: {},
-                message: 'Username and password are needed!'
-            },
-            status: 404
+            success: false,
+            data: {},
+            message: 'Username and password are needed!'
         })
     } else {
         let username = req.body.username,
@@ -86,12 +74,9 @@ AuthController.login = function (req, res) {
         User.findOne(potentialUser).then(function (user) {
             if (!user) {
                 res.status(404).json({
-                    data: {
-                        success: false,
-                        data: {},
-                        message: 'Authentication failed!'
-                    },
-                    status: 404
+                    success: false,
+                    data: {},
+                    message: 'Authentication failed!'
                 })
             } else {
                 // console.log(typeof user._modelOptions.instanceMethods.comparePasswords)
@@ -115,25 +100,20 @@ AuthController.login = function (req, res) {
                             userRole = 'admin'
                         }
                         res.status(200).json({
+                            success: true,
                             data: {
-                                success: true,
-                                data: {
-                                    token: 'Bearer ' + token,
-                                    role: userRole,
-                                    refresh_token: refreshToken
-                                },
-                                message: `User ${user.username} login successfully`
+                                token: 'Bearer ' + token,
+                                role: userRole,
+                                refresh_token: refreshToken
                             },
-                            status: 200
+                            message: `User ${user.username} login successfully`
+
                         })
                     } else {
                         res.status(404).json({
-                            data: {
-                                success: false,
-                                data: {},
-                                message: 'Login failed!'
-                            },
-                            status: 404
+                            success: false,
+                            data: {},
+                            message: 'Login failed!'
                         }
                         )
                     }
@@ -142,12 +122,9 @@ AuthController.login = function (req, res) {
         }).catch(function (error) {
             console.log(error)
             res.status(500).json({
-                data: {
-                    success: false,
-                    data: {},
-                    message: 'There was an error!'
-                },
-                status: 500
+                success: false,
+                data: {},
+                message: 'There was an error!'
             })
         })
     }
@@ -165,25 +142,19 @@ AuthController.token = function (req, res) {
             { expiresIn: config.tokenLifeTime }
         )
         res.status(200).json({
+            success: true,
             data: {
-                success: true,
-                data: {
-                    token: 'Bearer ' + token,
-                    refresh_token: refreshToken
-                },
-                message: `Generating new token for user ${username} successfully`
+                token: 'Bearer ' + token,
+                refresh_token: refreshToken
             },
-            status: 200
+            message: `Generating new token for user ${username} successfully`
         })
     }
     else {
         res.send(401).json({
-            data: {
-                success: false,
-                data: {},
-                message: 'Generating new token failed!'
-            },
-            status: 401
+            success: false,
+            data: {},
+            message: 'Generating new token failed!'
         })
     }
 }
@@ -195,12 +166,9 @@ AuthController.rejectRefreshToken = function (req, res) {
         delete refreshTokens[refreshToken]
     }
     res.send(204).json({
-        data: {
-            success: true,
-            data: {},
-            message: 'Delete refresh token successfully'
-        },
-        status: 204
+        success: true,
+        data: {},
+        message: 'Delete refresh token successfully'
     })
 }
 

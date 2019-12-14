@@ -16,12 +16,9 @@ SubjectController.createNewSubject = function (req, res) {
         Subject.findOne({ where: { subject_id: req.body.subject_id } }).then(function (subject) {
             if (subject) {
                 res.status(403).json({
-                    data: {
-                        success: false,
-                        data: {},
-                        message: `Subject ${req.body.subject_name} - ${req.body.subject_id} already exists!`
-                    },
-                    status: 403
+                    success: false,
+                    data: {},
+                    message: `Subject ${req.body.subject_name} - ${req.body.subject_id} already exists!`
                 })
                 return
             }
@@ -29,14 +26,11 @@ SubjectController.createNewSubject = function (req, res) {
             // creating new subject
             return Subject.create(newSubject).then(function () {
                 res.status(201).json({
+                    success: true,
                     data: {
-                        success: true,
-                        data: {
-                            subject_id: newSubject.subject_id
-                        },
-                        message: `Subject ${req.body.subject_name} - ${req.body.subject_id} created!`,
+                        subject_id: newSubject.subject_id
                     },
-                    status: 201
+                    message: `Subject ${req.body.subject_name} - ${req.body.subject_id} created!`
                 });
             })
         })
@@ -47,12 +41,9 @@ SubjectController.getAllSubject = function (req, res) {
     db.sync().then(function () {
         Subject.findAll({}).then(function (data) {
             res.status(200).json({
-                data: {
-                    success: true,
-                    data: data,
-                    message: "Get all subjects from database",
-                },
-                status: 200
+                success: true,
+                data: data,
+                message: "Get all subjects from database"
             })
         }).catch(function (err) {
             return next(err)
@@ -67,23 +58,17 @@ SubjectController.getSubjectById = function (req, res) {
         Subject.findOne({ where: { subject_id: subject_id } }).then(function (data) {
             if (!data) {
                 res.status(403).json({
-                    data: {
-                        success: false,
-                        data: {},
-                        message: `Subject ${subject_id} not exist!`,
-                    },
-                    status: 403
+                    success: false,
+                    data: {},
+                    message: `Subject ${subject_id} not exist!`
                 })
                 return
             }
 
             res.status(200).json({
-                data: {
-                    success: true,
-                    data: data,
-                    message: `Get subject ${subject_id} from database`
-                },
-                status: 200
+                success: true,
+                data: data,
+                message: `Get subject ${subject_id} from database`
             })
         }).catch(function (err) {
             return next(err)
@@ -101,12 +86,9 @@ SubjectController.updateSubjectById = function (req, res) {
         Subject.findOne({ where: { subject_id: subject_id } }).then(function (data) {
             if (!data) {
                 res.status(403).json({
-                    data: {
-                        success: false,
-                        data: {},
-                        message: `Subject ${subject_id} not exist!`
-                    },
-                    status: 403
+                    success: false,
+                    data: {},
+                    message: `Subject ${subject_id} not exist!`
                 })
                 return
             }
@@ -117,12 +99,9 @@ SubjectController.updateSubjectById = function (req, res) {
                 updated_at: Sequelize.literal('CURRENT_TIMESTAMP')
             }).then(function () {
                 res.status(200).json({
-                    data: {
-                        success: true,
-                        data: {},
-                        message: `Update subject ${subject_id} successfully`
-                    },
-                    status: 200
+                    success: true,
+                    data: {},
+                    message: `Update subject ${subject_id} successfully`
                 })
             })
         })
@@ -135,24 +114,18 @@ SubjectController.deleteSubjectById = function (req, res) {
         Subject.findOne({ where: { subject_id: subject_id } }).then(function (data) {
             if (!data) {
                 res.status(403).json({
-                    data: {
-                        success: false,
-                        data: {},
-                        message: `Subject ${subject_id} not exist!`
-                    },
-                    status: 403
+                    success: false,
+                    data: {},
+                    message: `Subject ${subject_id} not exist!`
                 })
                 return
             }
 
             return Subject.destroy({ where: { subject_id: subject_id } }).then(function () {
                 res.status(200).json({
-                    data: {
-                        success: true,
-                        data: {},
-                        message: `Subject ${subject_id} deleted!`
-                    },
-                    status: 200
+                    success: true,
+                    data: {},
+                    message: `Subject ${subject_id} deleted!`
                 })
             })
         })

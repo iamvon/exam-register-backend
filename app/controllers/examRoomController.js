@@ -22,12 +22,9 @@ ExamRoomController.createNewExamRoom = function (req, res) {
         ExamRoom.findOne({ where: { exam_id: newExamRoom.exam_id, room_place: newExamRoom.room_place, room_name: newExamRoom.room_name, computer_max_amount: newExamRoom.computer_max_amount, computer_amount: newExamRoom.computer_amount } }).then(function (data) {
             if (data) {
                 res.status(403).json({
-                    data: {
-                        success: false,
-                        data: {},
-                        message: `This exam room already exists!`
-                    },
-                    status: 403
+                    success: false,
+                    data: {},
+                    message: `This exam room already exists!`
                 })
                 return
             }
@@ -35,14 +32,11 @@ ExamRoomController.createNewExamRoom = function (req, res) {
             // creating new exam room
             return ExamRoom.create(newExamRoom).then(function () {
                 res.status(201).json({
+                    success: true,
                     data: {
-                        success: true,
-                        data: {
-                            exam_room_id: newExamRoom.exam_room_id
-                        },
-                        message: `New exam room created!`,
+                        exam_room_id: newExamRoom.exam_room_id
                     },
-                    status: 201
+                    message: `New exam room created!`,
                 });
             })
         })
@@ -53,12 +47,9 @@ ExamRoomController.getAllExamRoom = function (req, res) {
     db.sync().then(function () {
         ExamRoom.findAll({}).then(function (data) {
             res.status(200).json({
-                data: {
-                    success: true,
-                    data: data,
-                    message: "Get all exam rooms from database"
-                },
-                status: 200
+                success: true,
+                data: data,
+                message: "Get all exam rooms from database"
             })
         }).catch(function (err) {
             return next(err)
@@ -72,23 +63,17 @@ ExamRoomController.getExamRoomById = function (req, res) {
         ExamRoom.findOne({ where: { exam_room_id: exam_room_id } }).then(function (data) {
             if (!data) {
                 res.status(403).json({
-                    data: {
-                        success: false,
-                        data: {},
-                        message: `Exam room ${exam_room_id} not exist!`
-                    },
-                    status: 403
+                    success: false,
+                    data: {},
+                    message: `Exam room ${exam_room_id} not exist!`
                 })
                 return
             }
 
             res.status(200).json({
-                data: {
-                    success: true,
-                    data: data,
-                    message: `Get exam room ${exam_room_id} from database`
-                },
-                status: 200
+                success: true,
+                data: data,
+                message: `Get exam room ${exam_room_id} from database`
             })
         }).catch(function (err) {
             return next(err)
@@ -110,12 +95,9 @@ ExamRoomController.updateExamRoomById = function (req, res) {
         ExamRoom.findOne({ where: { exam_room_id: exam_room_id } }).then(function (data) {
             if (!data) {
                 res.status(403).json({
-                    data: {
-                        success: false,
-                        data: {},
-                        message: `Exam room ${exam_room_id} not exist!`
-                    },
-                    status: 403
+                    success: false,
+                    data: {},
+                    message: `Exam room ${exam_room_id} not exist!`
                 })
                 return
             }
@@ -129,12 +111,9 @@ ExamRoomController.updateExamRoomById = function (req, res) {
                 updated_at: Sequelize.literal('CURRENT_TIMESTAMP')
             }).then(function () {
                 res.status(200).json({
-                    data: {
-                        success: true,
-                        data: {},
-                        message: `Update exam room ${exam_room_id} successfully`
-                    },
-                    status: 200
+                    success: true,
+                    data: {},
+                    message: `Update exam room ${exam_room_id} successfully`
                 })
             })
         })
@@ -147,24 +126,18 @@ ExamRoomController.deleteExamRoomById = function (req, res) {
         ExamRoom.findOne({ where: { exam_room_id: exam_room_id } }).then(function (data) {
             if (!data) {
                 res.status(403).json({
-                    data: {
-                        success: false,
-                        data: {},
-                        message: `Exam room ${exam_room_id} not exist!`
-                    },
-                    status: 403
+                    success: false,
+                    data: {},
+                    message: `Exam room ${exam_room_id} not exist!`
                 })
                 return
             }
 
             return ExamRoom.destroy({ where: { exam_room_id: exam_room_id } }).then(function () {
                 res.status(200).json({
-                    data: {
-                        success: true,
-                        data: {},
-                        message: `Exam room ${exam_room_id} deleted!`
-                    },
-                    status: 200
+                    success: true,
+                    data: {},
+                    message: `Exam room ${exam_room_id} deleted!`
                 })
             })
         })
