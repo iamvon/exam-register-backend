@@ -26,7 +26,7 @@ StudentController.createStudent = function (req, res) {
             if (student) {
                 res.status(403).json({
                     success: false,
-                    data: {},
+                    data: [],
                     message: `Student ${req.body.student_id} already exists!`
                 })
                 return
@@ -54,7 +54,7 @@ StudentController.createStudent = function (req, res) {
 
                 res.status(201).json({
                     success: true,
-                    data: {},
+                    data: [],
                     message: `Student ${req.body.student_id} created!`
                 });
             })
@@ -83,7 +83,7 @@ StudentController.getStudentById = function (req, res) {
             if (!data) {
                 res.status(403).json({
                     success: false,
-                    data: {},
+                    data: [],
                     message: `Student ${student_id} not exist!`
                 })
                 return
@@ -117,7 +117,7 @@ StudentController.updateStudentById = function (req, res) {
             if (!data) {
                 res.status(403).json({
                     success: false,
-                    data: {},
+                    data: [],
                     message: `Student ${student_id} not exist!`
                 })
                 return
@@ -135,7 +135,7 @@ StudentController.updateStudentById = function (req, res) {
             }).then(function () {
                 res.status(200).json({
                     success: true,
-                    data: {},
+                    data: [],
                     message: `Update student ${student_id} successfully`
                 })
             })
@@ -146,7 +146,7 @@ StudentController.updateStudentById = function (req, res) {
             if (!data) {
                 res.status(403).json({
                     success: false,
-                    data: {},
+                    data: [],
                     message: `User ${student_id} not exist!`
                 })
                 return
@@ -160,7 +160,7 @@ StudentController.updateStudentById = function (req, res) {
             }).then(function () {
                 res.status(200).json({
                     success: true,
-                    data: {},
+                    data: [],
                     message: `Update user ${student_id} successfully`
                 })
             })
@@ -177,7 +177,7 @@ StudentController.deleteStudentById = function (req, res) {
             if (!data) {
                 res.status(403).json({
                     success: false,
-                    data: {},
+                    data: [],
                     message: `Student ${student_id} not exist!`
                 })
                 return
@@ -186,7 +186,7 @@ StudentController.deleteStudentById = function (req, res) {
             return Student.destroy({ where: { student_id: student_id } }).then(function () {
                 res.status(200).json({
                     success: true,
-                    data: {},
+                    data: [],
                     message: `Student ${student_id} deleted!`
                 })
             })
@@ -197,7 +197,7 @@ StudentController.deleteStudentById = function (req, res) {
             if (!user) {
                 res.status(403).json({
                     success: false,
-                    data: {},
+                    data: [],
                     message: `User ${student_id} not exist!`
                 })
                 return
@@ -206,7 +206,7 @@ StudentController.deleteStudentById = function (req, res) {
             return User.destroy({ where: { username: student_id } }).then(function () {
                 res.status(200).json({
                     success: true,
-                    data: {},
+                    data: [],
                     message: `User ${student_id} deleted!`
                 });
             })

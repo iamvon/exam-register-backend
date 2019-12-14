@@ -19,7 +19,7 @@ ExamController.createNewExam = function (req, res) {
             if (exam) {
                 res.status(403).json({
                     success: false,
-                    data: {},
+                    data: [],
                     message: `Exam ${req.body.exam_name} - ${req.body.school_year} already exists!`
                 })
                 return
@@ -29,7 +29,7 @@ ExamController.createNewExam = function (req, res) {
             return Exam.create(newExam).then(function () {
                 res.status(201).json({
                     success: true,
-                    data: { exam_id: newExam.exam_id },
+                    data: [{ exam_id: newExam.exam_id }],
                     message: `Exam ${req.body.exam_name} - ${req.body.school_year} created!`
                 });
             })
@@ -59,7 +59,7 @@ ExamController.getExamById = function (req, res) {
             if (!data) {
                 res.status(403).json({
                     success: false,
-                    data: {},
+                    data: [],
                     message: `Exam ${exam_id} not exist!`
                 })
                 return
@@ -87,7 +87,7 @@ ExamController.updateExamById = function (req, res) {
             if (!exam) {
                 res.status(403).json({
                     success: false,
-                    data: {},
+                    data: [],
                     message: `Exam ${exam_id} not exist!`
                 })
                 return
@@ -100,7 +100,7 @@ ExamController.updateExamById = function (req, res) {
             }).then(function () {
                 res.status(200).json({
                     success: true,
-                    data: {},
+                    data: [],
                     message: `Update exam ${exam_id} successfully`
                 })
             })
@@ -115,7 +115,7 @@ ExamController.deleteExamById = function (req, res) {
             if (!data) {
                 res.status(403).json({
                     success: false,
-                    data: {},
+                    data: [],
                     message: `Exam ${exam_id} not exist!`
                 })
                 return
@@ -124,7 +124,7 @@ ExamController.deleteExamById = function (req, res) {
             return Exam.destroy({ where: { exam_id: exam_id } }).then(function () {
                 res.status(200).json({
                     success: true,
-                    data: {},
+                    data: [],
                     message: `Exam ${exam_id} deleted!`
                 })
             })

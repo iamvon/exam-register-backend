@@ -21,7 +21,7 @@ StudentSubjectController.createNewStudentSubject = function (req, res) {
             if (data) {
                 res.status(403).json({
                         success: false,
-                        data: {},
+                        data: [],
                         message: 'This student-subject already exists!'
                 })
                 return
@@ -31,9 +31,9 @@ StudentSubjectController.createNewStudentSubject = function (req, res) {
             return StudentSubject.create(newStudentSubject).then(function () {
                 res.status(201).json({
                         success: true,
-                        data: {
+                        data: [{
                             student_subject_id: newStudentSubject.student_subject_id
-                        },
+                        }],
                         message: 'New student-subject created!'
                 });
             })
@@ -62,7 +62,7 @@ StudentSubjectController.getStudentSubjectById = function (req, res) {
             if (!data) {
                 res.status(403).json({
                         success: false,
-                        data: {},
+                        data: [],
                         message: `Student-subject ${student_subject_id} not exist!`
                 })
                 return
@@ -92,7 +92,7 @@ StudentSubjectController.updateStudentSubjectById = function (req, res) {
             if (!data) {
                 res.status(403).json({
                         success: false,
-                        data: {},
+                        data: [],
                         message: `Student-subject ${student_subject_id} not exist!`
                 })
                 return
@@ -107,7 +107,7 @@ StudentSubjectController.updateStudentSubjectById = function (req, res) {
             }).then(function () {
                 res.status(200).json({
                         success: true,
-                        data: {},
+                        data: [],
                         message: `Update student-subject ${student_subject_id} successfully`
                 })
             })
@@ -122,7 +122,7 @@ StudentSubjectController.deleteStudentSubjectById = function (req, res) {
             if (!data) {
                 res.status(403).json({
                         success: false,
-                        data: {},
+                        data: [],
                         message: `Student-subject ${student_subject_id} not exist!`
                 })
                 return
@@ -131,7 +131,7 @@ StudentSubjectController.deleteStudentSubjectById = function (req, res) {
             return StudentSubject.destroy({ where: { student_subject_id: student_subject_id } }).then(function () {
                 res.status(200).json({
                         success: true,
-                        data: {},
+                        data: [],
                         message: `Student-subject ${student_subject_id} deleted!`
                 })
             })

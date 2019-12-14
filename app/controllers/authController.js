@@ -35,7 +35,7 @@ AuthController.signUp = function (req, res) {
                 if (user) {
                     res.status(403).json({
                         success: false,
-                        data: {},
+                        data: [],
                         message: `Username ${req.body.username} already exists!`
                     })
                     return
@@ -45,7 +45,7 @@ AuthController.signUp = function (req, res) {
                     res.status(201).json(
                         {
                             success: true,
-                            data: {},
+                            data: [],
                             message: `New account created for user: ${newUser.username}`
                         }
                     );
@@ -75,7 +75,7 @@ AuthController.login = function (req, res) {
             if (!user) {
                 res.status(404).json({
                     success: false,
-                    data: {},
+                    data: [],
                     message: 'Authentication failed!'
                 })
             } else {
@@ -112,7 +112,7 @@ AuthController.login = function (req, res) {
                     } else {
                         res.status(404).json({
                             success: false,
-                            data: {},
+                            data: [],
                             message: 'Login failed!'
                         }
                         )
@@ -123,7 +123,7 @@ AuthController.login = function (req, res) {
             console.log(error)
             res.status(500).json({
                 success: false,
-                data: {},
+                data: [],
                 message: 'There was an error!'
             })
         })
@@ -143,17 +143,17 @@ AuthController.token = function (req, res) {
         )
         res.status(200).json({
             success: true,
-            data: {
+            data: [{
                 token: 'Bearer ' + token,
                 refresh_token: refreshToken
-            },
+            }],
             message: `Generating new token for user ${username} successfully`
         })
     }
     else {
         res.send(401).json({
             success: false,
-            data: {},
+            data: [],
             message: 'Generating new token failed!'
         })
     }
@@ -167,7 +167,7 @@ AuthController.rejectRefreshToken = function (req, res) {
     }
     res.send(204).json({
         success: true,
-        data: {},
+        data: [],
         message: 'Delete refresh token successfully'
     })
 }

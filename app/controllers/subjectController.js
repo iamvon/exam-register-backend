@@ -17,7 +17,7 @@ SubjectController.createNewSubject = function (req, res) {
             if (subject) {
                 res.status(403).json({
                     success: false,
-                    data: {},
+                    data: [],
                     message: `Subject ${req.body.subject_name} - ${req.body.subject_id} already exists!`
                 })
                 return
@@ -27,9 +27,9 @@ SubjectController.createNewSubject = function (req, res) {
             return Subject.create(newSubject).then(function () {
                 res.status(201).json({
                     success: true,
-                    data: {
+                    data: [{
                         subject_id: newSubject.subject_id
-                    },
+                    }],
                     message: `Subject ${req.body.subject_name} - ${req.body.subject_id} created!`
                 });
             })
@@ -59,7 +59,7 @@ SubjectController.getSubjectById = function (req, res) {
             if (!data) {
                 res.status(403).json({
                     success: false,
-                    data: {},
+                    data: [],
                     message: `Subject ${subject_id} not exist!`
                 })
                 return
@@ -87,7 +87,7 @@ SubjectController.updateSubjectById = function (req, res) {
             if (!data) {
                 res.status(403).json({
                     success: false,
-                    data: {},
+                    data: [],
                     message: `Subject ${subject_id} not exist!`
                 })
                 return
@@ -100,7 +100,7 @@ SubjectController.updateSubjectById = function (req, res) {
             }).then(function () {
                 res.status(200).json({
                     success: true,
-                    data: {},
+                    data: [],
                     message: `Update subject ${subject_id} successfully`
                 })
             })
@@ -115,7 +115,7 @@ SubjectController.deleteSubjectById = function (req, res) {
             if (!data) {
                 res.status(403).json({
                     success: false,
-                    data: {},
+                    data: [],
                     message: `Subject ${subject_id} not exist!`
                 })
                 return
@@ -124,7 +124,7 @@ SubjectController.deleteSubjectById = function (req, res) {
             return Subject.destroy({ where: { subject_id: subject_id } }).then(function () {
                 res.status(200).json({
                     success: true,
-                    data: {},
+                    data: [],
                     message: `Subject ${subject_id} deleted!`
                 })
             })

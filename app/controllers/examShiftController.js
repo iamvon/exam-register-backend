@@ -20,7 +20,7 @@ ExamShiftController.createNewExamShift = function (req, res) {
             if (data) {
                 res.status(403).json({
                     success: false,
-                    data: {},
+                    data: [],
                     message: `Exam shift from ${req.body.start_time} to ${req.body.end_time} already exists!`
                 })
                 return
@@ -30,9 +30,9 @@ ExamShiftController.createNewExamShift = function (req, res) {
             return ExamShift.create(newExamShift).then(function () {
                 res.status(201).json({
                     success: true,
-                    data: {
+                    data: [{
                         exam_shift_id: newExamShift.exam_shift_id
-                    },
+                    }],
                     message: `New exam shift from ${req.body.start_time} to ${req.body.end_time} created!`
                 });
             })
@@ -62,7 +62,7 @@ ExamShiftController.getExamShiftById = function (req, res) {
             if (!data) {
                 res.status(403).json({
                     success: false,
-                    data: {},
+                    data: [],
                     message: `Exam shift ${exam_shift_id} not exist!`
                 })
                 return
@@ -91,7 +91,7 @@ ExamShiftController.updateExamShiftById = function (req, res) {
             if (!data) {
                 res.status(403).json({
                     success: false,
-                    data: {},
+                    data: [],
                     message: `Exam shift ${exam_shift_id} not exist!`
                 })
                 return
@@ -105,7 +105,7 @@ ExamShiftController.updateExamShiftById = function (req, res) {
             }).then(function () {
                 res.status(200).json({
                     success: true,
-                    data: {},
+                    data: [],
                     message: `Update exam shift ${exam_shift_id} successfully`
                 })
             })
@@ -120,7 +120,7 @@ ExamShiftController.deleteExamShiftById = function (req, res) {
             if (!data) {
                 res.status(403).json({
                     success: false,
-                    data: {},
+                    data: [],
                     message: `Exam shift ${exam_shift_id} not exist!`
                 })
                 return
@@ -129,7 +129,7 @@ ExamShiftController.deleteExamShiftById = function (req, res) {
             return ExamShift.destroy({ where: { exam_shift_id: exam_shift_id } }).then(function () {
                 res.status(200).json({
                     success: true,
-                    data: {},
+                    data: [],
                     message: `Exam shift ${exam_shift_id} deleted!`
                 })
             })
