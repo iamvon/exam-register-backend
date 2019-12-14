@@ -29,6 +29,8 @@ config.keys = {
     secret: 'secret'
 }
 
+config.tokenLifeTime = '60m' // Time in minutes
+
 let userRoles = config.userRoles = {
     guest: 1,   // ...001
     user: 2,    // ...010

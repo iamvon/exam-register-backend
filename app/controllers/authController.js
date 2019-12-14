@@ -9,6 +9,9 @@ let Sequelize = require('sequelize'),
     User = require('../models/user')
 
 let AuthController = {}
+let randtoken = require('rand-token')
+
+let refreshTokens = {}
 
 // Register an user
 AuthController.signUp = function (req, res) {
@@ -64,8 +67,8 @@ AuthController.signUp = function (req, res) {
     }
 }
 
-// Authenticate (or Login) an user
-AuthController.authenticateUser = function (req, res) {
+// Login an user
+AuthController.login = function (req, res) {
     if (!req.body.username || !req.body.password) {
         res.status(404).json({
             data: {
@@ -94,18 +97,30 @@ AuthController.authenticateUser = function (req, res) {
                 // console.log(typeof user._modelOptions.instanceMethods.comparePasswords)
                 user.comparePasswords(password, function (error, isMatch) {
                     if (isMatch && !error) {
-                        var token = jwt.sign(
+                        let token = jwt.sign(
                             { username: user.username },
                             config.keys.secret,
-                            { expiresIn: '60000m' }
+                            { expiresIn: config.tokenLifeTime }
                         )
 
+                        let refreshToken = randtoken.uid(256)
+                        refreshTokens[refreshToken] = user.username
+
+                        let userRole = ''
+                        if (user.role == 1) {
+                            userRole = 'guest'
+                        } else if (user.role == 2) {
+                            userRole = 'user'
+                        } else if (user.role == 4) {
+                            userRole = 'admin'
+                        }
                         res.status(200).json({
                             data: {
                                 success: true,
                                 data: {
                                     token: 'Bearer ' + token,
-                                    role: user.role
+                                    role: userRole,
+                                    refresh_token: refreshToken
                                 },
                                 message: `User ${user.username} login successfully`
                             },
@@ -136,6 +151,57 @@ AuthController.authenticateUser = function (req, res) {
             })
         })
     }
+}
+
+// Generating new token for user
+AuthController.token = function (req, res) {
+    let username = req.body.username
+    let refreshToken = req.body.refresh_token
+
+    if ((refreshToken in refreshTokens) && (refreshTokens[refreshToken] == username)) {
+        let token = jwt.sign(
+            { username: username },
+            config.keys.secret,
+            { expiresIn: config.tokenLifeTime }
+        )
+        res.status(200).json({
+            data: {
+                success: true,
+                data: {
+                    token: 'Bearer ' + token,
+                    refresh_token: refreshToken
+                },
+                message: `Generating new token for user ${username} successfully`
+            },
+            status: 200
+        })
+    }
+    else {
+        res.send(401).json({
+            data: {
+                success: false,
+                data: {},
+                message: 'Generating new token failed!'
+            },
+            status: 401
+        })
+    }
+}
+
+// Deleting refresh token of an user
+AuthController.rejectRefreshToken = function (req, res) {
+    let refreshToken = req.body.refreshToken
+    if (refreshToken in refreshTokens) {
+        delete refreshTokens[refreshToken]
+    }
+    res.send(204).json({
+        data: {
+            success: true,
+            data: {},
+            message: 'Delete refresh token successfully'
+        },
+        status: 204
+    })
 }
 
 module.exports = AuthController

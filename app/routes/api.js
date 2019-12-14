@@ -10,12 +10,16 @@ let config = require('../config'),
 let APIRoutes = function (passport) {
     // User api
     router.post('/signup', AuthController.signUp)
-    router.post('/authenticate', AuthController.authenticateUser)
+    router.post('/login', AuthController.login)
+    router.post('/token', passport.authenticate('jwt', { session: false }), allowOnly(config.accessLevels.user, AuthController.token))
     router.post('/user/:user_id', passport.authenticate('jwt', { session: false }), allowOnly(config.accessLevels.admin, UserController.updateUserById))
     router.get('/user/student/:student_id', passport.authenticate('jwt', { session: false }), allowOnly(config.accessLevels.admin, UserController.getUserIdByStudentId))
     router.get('/user', passport.authenticate('jwt', { session: false }), allowOnly(config.accessLevels.admin, UserController.getAllUser))
     router.get('/user/:user_id', passport.authenticate('jwt', { session: false }), allowOnly(config.accessLevels.admin, UserController.getUserById))
     
+    // Delete refresh token of an user
+    router.post('/token/reject', passport.authenticate('jwt', { session: false }), allowOnly(config.accessLevels.admin, AuthController.rejectRefreshToken))
+
     // Student api 
     router.get('/student', passport.authenticate('jwt', { session: false }), allowOnly(config.accessLevels.admin, AdminController.student.getAllStudent))
     router.get('/student/:student_id', passport.authenticate('jwt', { session: false }), allowOnly(config.accessLevels.admin, AdminController.student.getStudentById))
