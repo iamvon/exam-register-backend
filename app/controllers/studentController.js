@@ -24,7 +24,14 @@ StudentController.createStudent = function (req, res) {
 
         Student.findOne({ where: { student_id: req.body.student_id } }).then(function (student) {
             if (student) {
-                res.status(403).json({ message: `Student ${req.body.student_id} already exists!` })
+                res.status(403).json({
+                    data: {
+                        success: false,
+                        data: {},
+                        message: `Student ${req.body.student_id} already exists!`
+                    },
+                    status: 403
+                })
                 return
             }
 
@@ -48,7 +55,14 @@ StudentController.createStudent = function (req, res) {
                         console.log(error);
                     });
 
-                res.status(201).json({ message: `Student ${req.body.student_id} created!` });
+                res.status(201).json({
+                    data: {
+                        success: true,
+                        data: {},
+                        message: `Student ${req.body.student_id} created!`
+                    },
+                    status: 201
+                });
             })
         })
     })
@@ -58,9 +72,12 @@ StudentController.getAllStudent = function (req, res) {
     db.sync().then(function () {
         Student.findAll({}).then(function (data) {
             res.status(200).json({
-                status: 'success',
-                data: data,
-                message: "Get all students from database"
+                data: {
+                    success: true,
+                    data: data,
+                    message: "Get all students from database"
+                },
+                status: 200
             })
         }).catch(function (err) {
             return next(err)
@@ -73,14 +90,24 @@ StudentController.getStudentById = function (req, res) {
     db.sync().then(function () {
         Student.findOne({ where: { student_id: student_id } }).then(function (data) {
             if (!data) {
-                res.status(403).json({ message: `Student ${student_id} not exist!` })
+                res.status(403).json({
+                    data: {
+                        success: false,
+                        data: {},
+                        message: `Student ${student_id} not exist!`
+                    },
+                    status: 403
+                })
                 return
             }
 
             res.status(200).json({
-                status: 'success',
-                data: data,
-                message: `Get student ${student_id} from database`
+                data: {
+                    success: true,
+                    data: data,
+                    message: `Get student ${student_id} from database`
+                },
+                status: 200
             })
         }).catch(function (err) {
             return next(err)
@@ -103,7 +130,14 @@ StudentController.updateStudentById = function (req, res) {
         // Update student 
         Student.findOne({ where: { student_id: student_id } }).then(function (data) {
             if (!data) {
-                res.status(403).json({ message: `Student ${student_id} not exist!` })
+                res.status(403).json({
+                    data: {
+                        success: false,
+                        data: {},
+                        message: `Student ${student_id} not exist!`
+                    },
+                    status: 403
+                })
                 return
             }
 
@@ -118,8 +152,12 @@ StudentController.updateStudentById = function (req, res) {
                 updated_at: Sequelize.literal('CURRENT_TIMESTAMP')
             }).then(function () {
                 res.status(200).json({
-                    status: 'success',
-                    message: `Update student ${student_id} successfully`
+                    data: {
+                        success: true,
+                        data: {},
+                        message: `Update student ${student_id} successfully`
+                    },
+                    status: 200
                 })
             })
         })
@@ -127,7 +165,14 @@ StudentController.updateStudentById = function (req, res) {
         // Also update user account of student 
         User.findOne({ where: { username: student_id } }).then(function (data) {
             if (!data) {
-                res.status(403).json({ message: `User ${student_id} not exist!` })
+                res.status(403).json({
+                    data: {
+                        success: false,
+                        data: {},
+                        message: `User ${student_id} not exist!`
+                    },
+                    status: 403
+                })
                 return
             }
 
@@ -138,8 +183,12 @@ StudentController.updateStudentById = function (req, res) {
                 updated_at: Sequelize.literal('CURRENT_TIMESTAMP')
             }).then(function () {
                 res.status(200).json({
-                    status: 'success',
-                    message: `Update user ${student_id} successfully`
+                    data: {
+                        success: true,
+                        data: {},
+                        message: `Update user ${student_id} successfully`
+                    },
+                    status: 200
                 })
             })
         })
@@ -149,28 +198,56 @@ StudentController.updateStudentById = function (req, res) {
 StudentController.deleteStudentById = function (req, res) {
     let student_id = req.params.student_id
     db.sync().then(function () {
-        
+
         // Delete student 
         Student.findOne({ where: { student_id: student_id } }).then(function (data) {
             if (!data) {
-                res.status(403).json({ message: `Student ${student_id} not exist!` })
+                res.status(403).json({
+                    data: {
+                        success: false,
+                        data: {},
+                        message: `Student ${student_id} not exist!`
+                    },
+                    status: 403
+                })
                 return
             }
 
             return Student.destroy({ where: { student_id: student_id } }).then(function () {
-                res.status(201).json({ message: `Student ${student_id} deleted!` })
+                res.status(200).json({
+                    data: {
+                        success: true,
+                        data: {},
+                        message: `Student ${student_id} deleted!`
+                    },
+                    status: 200
+                })
             })
         })
 
         // Also delete user account of student 
         User.findOne({ where: { username: student_id } }).then(function (user) {
             if (!user) {
-                res.status(403).json({ message: `User ${student_id} not exist!` })
+                res.status(403).json({
+                    data: {
+                        success: false,
+                        data: {},
+                        message: `User ${student_id} not exist!`
+                    },
+                    status: 403
+                })
                 return
             }
 
             return User.destroy({ where: { username: student_id } }).then(function () {
-                res.status(201).json({ message: `User ${student_id} deleted!` });
+                res.status(200).json({
+                    data: {
+                        success: true,
+                        data: {},
+                        message: `User ${student_id} deleted!`
+                    },
+                    status: 200
+                });
             })
         })
     })

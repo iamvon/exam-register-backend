@@ -13,7 +13,14 @@ let AuthController = {}
 // Register an user
 AuthController.signUp = function (req, res) {
     if (!req.body.username || !req.body.password) {
-        res.json({ message: 'Please provide an username and a password.' })
+        res.status(404).json({
+            data: {
+                success: false,
+                data: {},
+                message: 'Please provide an username and a password.'
+            },
+            status: 404
+        })
     } else {
         db.sync().then(function () {
             let newUser = {
@@ -26,12 +33,28 @@ AuthController.signUp = function (req, res) {
 
             User.findOne({ where: { username: req.body.username } }).then(function (user) {
                 if (user) {
-                    res.status(403).json({ message: `Username ${req.body.username} already exists!` })
+                    res.status(403).json({
+                        data: {
+                            success: false,
+                            data: {},
+                            message: `Username ${req.body.username} already exists!`
+                        },
+                        status: 403
+                    })
                     return
                 }
 
                 return User.create(newUser).then(function () {
-                    res.status(201).json({ message: `New account created for user: ${newUser.username}` });
+                    res.status(201).json(
+                        {
+                            data: {
+                                success: true,
+                                data: {},
+                                message: `New account created for user: ${newUser.username}`
+                            },
+                            status: 201
+                        }
+                    );
                 })
             })
 
@@ -44,7 +67,14 @@ AuthController.signUp = function (req, res) {
 // Authenticate (or Login) an user
 AuthController.authenticateUser = function (req, res) {
     if (!req.body.username || !req.body.password) {
-        res.status(404).json({ message: 'Username and password are needed!' })
+        res.status(404).json({
+            data: {
+                success: false,
+                data: {},
+                message: 'Username and password are needed!'
+            },
+            status: 404
+        })
     } else {
         let username = req.body.username,
             password = req.body.password,
@@ -52,30 +82,58 @@ AuthController.authenticateUser = function (req, res) {
 
         User.findOne(potentialUser).then(function (user) {
             if (!user) {
-                res.status(404).json({ message: 'Authentication failed!' })
+                res.status(404).json({
+                    data: {
+                        success: false,
+                        data: {},
+                        message: 'Authentication failed!'
+                    },
+                    status: 404
+                })
             } else {
                 // console.log(typeof user._modelOptions.instanceMethods.comparePasswords)
-                user.comparePasswords(password, function(error, isMatch) {
-                    if(isMatch && !error) {
+                user.comparePasswords(password, function (error, isMatch) {
+                    if (isMatch && !error) {
                         var token = jwt.sign(
                             { username: user.username },
                             config.keys.secret,
                             { expiresIn: '60000m' }
                         )
 
-                        res.json({
-                            success: true,
-                            token: 'Bearer ' + token,
-                            role: user.role
+                        res.status(200).json({
+                            data: {
+                                success: true,
+                                data: {
+                                    token: 'Bearer ' + token,
+                                    role: user.role
+                                },
+                                message: `User ${user.username} login successfully`
+                            },
+                            status: 200
                         })
                     } else {
-                        res.status(404).json({ message: 'Login failed!' })
+                        res.status(404).json({
+                            data: {
+                                success: false,
+                                data: {},
+                                message: 'Login failed!'
+                            },
+                            status: 404
+                        }
+                        )
                     }
                 })
             }
         }).catch(function (error) {
             console.log(error)
-            res.status(500).json({ message: 'There was an error!' })
+            res.status(500).json({
+                data: {
+                    success: false,
+                    data: {},
+                    message: 'There was an error!'
+                },
+                status: 500
+            })
         })
     }
 }

@@ -18,16 +18,28 @@ ExamShiftController.createNewExamShift = function (req, res) {
 
         ExamShift.findOne({ where: { exam_id: req.body.exam_id, start_time: req.body.start_time, end_time: req.body.end_time } }).then(function (data) {
             if (data) {
-                res.status(403).json({ message: `Exam shift from ${req.body.start_time} to ${req.body.end_time} already exists!` })
+                res.status(403).json({
+                    data: {
+                        success: false,
+                        data: {},
+                        message: `Exam shift from ${req.body.start_time} to ${req.body.end_time} already exists!`
+                    },
+                    status: 403
+                })
                 return
             }
 
             // createing new exam shift
             return ExamShift.create(newExamShift).then(function () {
                 res.status(201).json({
-                    status: 'success',
-                    message: `New exam shift from ${req.body.start_time} to ${req.body.end_time} created!`,
-                    exam_shift_id: newExamShift.exam_shift_id
+                    data: {
+                        success: true,
+                        data: {
+                            exam_shift_id: newExamShift.exam_shift_id
+                        },
+                        message: `New exam shift from ${req.body.start_time} to ${req.body.end_time} created!`,
+                    },
+                    status: 201
                 });
             })
         })
@@ -38,9 +50,12 @@ ExamShiftController.getAllExamShift = function (req, res) {
     db.sync().then(function () {
         ExamShift.findAll({}).then(function (data) {
             res.status(200).json({
-                status: 'success',
-                data: data,
-                message: "Get all exam shifts from database"
+                data: {
+                    success: true,
+                    data: data,
+                    message: "Get all exam shifts from database"
+                },
+                status: 200
             })
         }).catch(function (err) {
             return next(err)
@@ -54,14 +69,24 @@ ExamShiftController.getExamShiftById = function (req, res) {
     db.sync().then(function () {
         ExamShift.findOne({ where: { exam_shift_id: exam_shift_id } }).then(function (data) {
             if (!data) {
-                res.status(403).json({ message: `Exam shift ${exam_shift_id} not exist!` })
+                res.status(403).json({
+                    data: {
+                        success: false,
+                        data: {},
+                        message: `Exam shift ${exam_shift_id} not exist!`
+                    },
+                    status: 403
+                })
                 return
             }
 
             res.status(200).json({
-                status: 'success',
-                data: data,
-                message: `Get exam shift ${exam_shift_id} from database`
+                data: {
+                    success: true,
+                    data: data,
+                    message: `Get exam shift ${exam_shift_id} from database`
+                },
+                status: 200
             })
         }).catch(function (err) {
             return next(err)
@@ -79,7 +104,14 @@ ExamShiftController.updateExamShiftById = function (req, res) {
     db.sync().then(function () {
         ExamShift.findOne({ where: { exam_shift_id: exam_shift_id } }).then(function (data) {
             if (!data) {
-                res.status(403).json({ message: `Exam shift ${exam_shift_id} not exist!` })
+                res.status(403).json({
+                    data: {
+                        success: false,
+                        data: {},
+                        message: `Exam shift ${exam_shift_id} not exist!`
+                    },
+                    status: 403
+                })
                 return
             }
 
@@ -90,8 +122,12 @@ ExamShiftController.updateExamShiftById = function (req, res) {
                 updated_at: Sequelize.literal('CURRENT_TIMESTAMP')
             }).then(function () {
                 res.status(200).json({
-                    status: 'success',
-                    message: `Update exam shift ${exam_shift_id} successfully`
+                    data: {
+                        success: true,
+                        data: {},
+                        message: `Update exam shift ${exam_shift_id} successfully`
+                    },
+                    status: 200
                 })
             })
         })
@@ -103,12 +139,26 @@ ExamShiftController.deleteExamShiftById = function (req, res) {
     db.sync().then(function () {
         ExamShift.findOne({ where: { exam_shift_id: exam_shift_id } }).then(function (data) {
             if (!data) {
-                res.status(403).json({ message: `Exam shift ${exam_shift_id} not exist!` })
+                res.status(403).json({
+                    data: {
+                        success: false,
+                        data: {},
+                        message: `Exam shift ${exam_shift_id} not exist!`
+                    },
+                    status: 403
+                })
                 return
             }
 
             return ExamShift.destroy({ where: { exam_shift_id: exam_shift_id } }).then(function () {
-                res.status(201).json({ message: `Exam shift ${exam_shift_id} deleted!` })
+                res.status(200).json({
+                    data: {
+                        success: true,
+                        data: {},
+                        message: `Exam shift ${exam_shift_id} deleted!`
+                    },
+                    status: 200
+                })
             })
         })
     })

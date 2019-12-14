@@ -9,9 +9,6 @@ let StudentController = require('./studentController'),
     ExamScheduleController = require('./examScheduleController')
 
 let AdminController = {
-    index: function (req, res) {
-        res.status(200).json({ message: 'Welcome to the admin area ' + req.user.username + '!' })
-    },
     student: StudentController,
     subject: SubjectController,
     exam: ExamController,
