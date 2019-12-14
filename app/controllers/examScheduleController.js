@@ -21,7 +21,7 @@ ExamScheduleController.createNewExamSchedule = function (req, res) {
             if (data) {
                 res.status(403).json({
                     success: false,
-                    data: [],
+                    data: {},
                     message: 'This exam schedule already exists!'
                 })
                 return
@@ -31,9 +31,9 @@ ExamScheduleController.createNewExamSchedule = function (req, res) {
             return ExamSchedule.create(newExamSchedule).then(function () {
                 res.status(201).json({
                     success: true,
-                    data: [{
+                    data: {
                         exam_schedule_id: newExamSchedule.exam_schedule_id
-                    }],
+                    },
                     message: 'New exam schedule created!',
                 });
             })
@@ -62,7 +62,7 @@ ExamScheduleController.getExamScheduleById = function (req, res) {
             if (!data) {
                 res.status(403).json({
                     success: false,
-                    data: [],
+                    data: {},
                     message: `Exam schedule ${exam_schedule_id} not exist!`
                 })
                 return
@@ -91,7 +91,7 @@ ExamScheduleController.updateExamScheduleById = function (req, res) {
             if (!data) {
                 res.status(403).json({
                     success: false,
-                    data: [],
+                    data: {},
                     message: `Exam schedule ${exam_schedule_id} not exist!`
                 })
                 return
@@ -105,7 +105,7 @@ ExamScheduleController.updateExamScheduleById = function (req, res) {
             }).then(function () {
                 res.status(200).json({
                     success: true,
-                    data: [],
+                    data: {},
                     message: `Update exam schedule ${exam_schedule_id} successfully`
                 })
             })
@@ -120,7 +120,7 @@ ExamScheduleController.deleteExamScheduleById = function (req, res) {
             if (!data) {
                 res.status(403).json({
                     success: false,
-                    data: [],
+                    data: {},
                     message: `Exam schedule ${exam_schedule_id} not exist!`
                 })
                 return
@@ -129,7 +129,7 @@ ExamScheduleController.deleteExamScheduleById = function (req, res) {
             return ExamSchedule.destroy({ where: { exam_schedule_id: exam_schedule_id } }).then(function () {
                 res.status(200).json({
                     success: true,
-                    data: [],
+                    data: {},
                     message: `Exam schedule ${exam_schedule_id} deleted!`
                 })
             })

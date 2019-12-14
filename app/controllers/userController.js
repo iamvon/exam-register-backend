@@ -11,9 +11,9 @@ UserController.getUserIdByStudentId = function (req, res) {
     User.findOne({ where: { username: student_id } }).then(function (data) {
         res.status(200).json({
             success: true,
-            data: [{
+            data: {
                 user_id: data.user_id,
-            }],
+            },
             message: "Get user ID by student ID"
         })
     }).catch(function (err) {
@@ -42,7 +42,7 @@ UserController.getUserById = function (req, res) {
             if (!data) {
                 res.status(403).json({
                     success: false,
-                    data: [],
+                    data: {},
                     message: `User ${user_id} not exist!`
                 })
                 return
@@ -73,7 +73,7 @@ UserController.updateUserById = function (req, res) {
             if (!data) {
                 res.status(403).json({
                     success: false,
-                    data: [],
+                    data: {},
                     message: `User ${user_id} not exist!`
                 })
                 return
@@ -88,7 +88,7 @@ UserController.updateUserById = function (req, res) {
             }).then(function () {
                 res.status(200).json({
                     success: true,
-                    data: [],
+                    data: {},
                     message: `Update user ${user_id} successfully`
                 })
             })

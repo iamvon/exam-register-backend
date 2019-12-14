@@ -23,7 +23,7 @@ ExamRoomController.createNewExamRoom = function (req, res) {
             if (data) {
                 res.status(403).json({
                     success: false,
-                    data: [],
+                    data: {},
                     message: `This exam room already exists!`
                 })
                 return
@@ -33,9 +33,9 @@ ExamRoomController.createNewExamRoom = function (req, res) {
             return ExamRoom.create(newExamRoom).then(function () {
                 res.status(201).json({
                     success: true,
-                    data: [{
+                    data: {
                         exam_room_id: newExamRoom.exam_room_id
-                    }],
+                    },
                     message: `New exam room created!`,
                 });
             })
@@ -64,7 +64,7 @@ ExamRoomController.getExamRoomById = function (req, res) {
             if (!data) {
                 res.status(403).json({
                     success: false,
-                    data: [],
+                    data: {},
                     message: `Exam room ${exam_room_id} not exist!`
                 })
                 return
@@ -96,7 +96,7 @@ ExamRoomController.updateExamRoomById = function (req, res) {
             if (!data) {
                 res.status(403).json({
                     success: false,
-                    data: [],
+                    data: {},
                     message: `Exam room ${exam_room_id} not exist!`
                 })
                 return
@@ -112,7 +112,7 @@ ExamRoomController.updateExamRoomById = function (req, res) {
             }).then(function () {
                 res.status(200).json({
                     success: true,
-                    data: [],
+                    data: {},
                     message: `Update exam room ${exam_room_id} successfully`
                 })
             })
@@ -127,7 +127,7 @@ ExamRoomController.deleteExamRoomById = function (req, res) {
             if (!data) {
                 res.status(403).json({
                     success: false,
-                    data: [],
+                    data: {},
                     message: `Exam room ${exam_room_id} not exist!`
                 })
                 return
@@ -136,7 +136,7 @@ ExamRoomController.deleteExamRoomById = function (req, res) {
             return ExamRoom.destroy({ where: { exam_room_id: exam_room_id } }).then(function () {
                 res.status(200).json({
                     success: true,
-                    data: [],
+                    data: {},
                     message: `Exam room ${exam_room_id} deleted!`
                 })
             })
