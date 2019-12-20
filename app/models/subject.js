@@ -10,10 +10,16 @@ let config = require('../config'),
 
 let SubjectDefinition = {
     subject_id: {
-        type: Sequelize.STRING,
+        type: Sequelize.UUID,
         unique: true,
         allowNull: false,
         primaryKey: true,
+    },
+
+    subject_code: {
+        type: Sequelize.STRING,
+        unique: true,
+        allowNull: false
     },
 
     subject_name: {

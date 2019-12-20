@@ -141,30 +141,6 @@ StudentController.updateStudentById = function (req, res) {
             })
         })
 
-        // Also update user account of student 
-        User.findOne({ where: { username: student_id } }).then(function (data) {
-            if (!data) {
-                res.status(403).json({
-                    success: false,
-                    data: {},
-                    message: `User ${student_id} not exist!`
-                })
-                return
-            }
-
-            data.update({
-                avatar_url: updateStudent.avatar_url,
-                password: updateStudent.date_birth.replace(/-/g, ''),
-                email: updateStudent.email,
-                updated_at: Sequelize.literal('CURRENT_TIMESTAMP')
-            }).then(function () {
-                res.status(200).json({
-                    success: true,
-                    data: {},
-                    message: `Update user ${student_id} successfully`
-                })
-            })
-        })
     })
 }
 
@@ -189,26 +165,6 @@ StudentController.deleteStudentById = function (req, res) {
                     data: {},
                     message: `Student ${student_id} deleted!`
                 })
-            })
-        })
-
-        // Also delete user account of student 
-        User.findOne({ where: { username: student_id } }).then(function (user) {
-            if (!user) {
-                res.status(403).json({
-                    success: false,
-                    data: {},
-                    message: `User ${student_id} not exist!`
-                })
-                return
-            }
-
-            return User.destroy({ where: { username: student_id } }).then(function () {
-                res.status(200).json({
-                    success: true,
-                    data: {},
-                    message: `User ${student_id} deleted!`
-                });
             })
         })
     })

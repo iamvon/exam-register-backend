@@ -151,7 +151,7 @@ AuthController.token = function (req, res) {
         })
     }
     else {
-        res.send(401).json({
+        res.status(401).json({
             success: false,
             data: {},
             message: 'Generating new token failed!'
@@ -161,11 +161,11 @@ AuthController.token = function (req, res) {
 
 // Deleting refresh token of an user
 AuthController.rejectRefreshToken = function (req, res) {
-    let refreshToken = req.body.refreshToken
+    let refreshToken = req.body.refresh_token
     if (refreshToken in refreshTokens) {
         delete refreshTokens[refreshToken]
     }
-    res.send(204).json({
+    res.status(204).json({
         success: true,
         data: {},
         message: 'Delete refresh token successfully'
