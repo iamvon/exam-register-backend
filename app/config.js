@@ -13,6 +13,7 @@ config.db.details = {
     port: 3306,
     dialect: 'mysql',
     logging: false,
+    timezone: '+07:00',
     define: {
         charset: 'utf8',
         collate: 'utf8_general_ci',
