@@ -6,18 +6,27 @@ let Sequelize = require('sequelize'),
 
 let UserController = {}
 
-UserController.getUserIdByStudentId = function (req, res) {
-    let student_id = req.params.student_id
-    User.findOne({ where: { username: student_id } }).then(function (data) {
-        res.status(200).json({
-            success: true,
-            data: {
-                user_id: data.user_id,
-            },
-            message: "Get user ID by student ID"
+UserController.getUserIdByStudentCode = function (req, res) {
+    let student_code = req.params.student_code
+    db.sync().then(function () {
+        User.findOne({ where: { username: student_code } }).then(function (data) {
+            if (!data) {
+                res.status(403).json({
+                    success: false,
+                    data: {},
+                    message: `User ${student_code} not exist!`
+                })
+                return
+            }
+
+            res.status(200).json({
+                success: true,
+                data: {
+                    user_id: data.user_id,
+                },
+                message: "Get user ID by student's code"
+            })
         })
-    }).catch(function (err) {
-        return next(err)
     })
 }
 

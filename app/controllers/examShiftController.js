@@ -28,7 +28,7 @@ ExamShiftController.createNewExamShift = function (req, res) {
 
             // createing new exam shift
             return ExamShift.create(newExamShift).then(function () {
-                res.status(201).json({
+                res.status(200).json({
                     success: true,
                     data: {
                         exam_shift_id: newExamShift.exam_shift_id

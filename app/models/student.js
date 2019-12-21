@@ -6,14 +6,19 @@ let Sequelize = require('sequelize'),
 let config = require('../config'),
     db = require('../services/database'),
     StudentSubject = require('../models/student_subject')
-// let User = require('../models/user')
 
 let StudentDefinition = {
     student_id: {
-        type: Sequelize.STRING,
+        type: Sequelize.UUID,
         unique: true,
         allowNull: false,
         primaryKey: true
+    },
+
+    student_code: {
+        type: Sequelize.STRING,
+        unique: true,
+        allowNull: false,
     },
     
     avatar_url: {
@@ -66,6 +71,5 @@ let StudentDefinition = {
 
 let Student = db.define('student', StudentDefinition)
 Student.hasMany(StudentSubject, { foreignKey: 'student_id' })
-// Student.hasOne(User, { foreignKey: 'username'})
 
 module.exports = Student

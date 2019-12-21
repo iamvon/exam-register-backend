@@ -13,7 +13,7 @@ let APIRoutes = function (passport) {
     router.post('/login', AuthController.login)
     router.post('/token', passport.authenticate('jwt', { session: false }), allowOnly(config.accessLevels.user, AuthController.token))
     router.post('/user/:user_id', passport.authenticate('jwt', { session: false }), allowOnly(config.accessLevels.admin, UserController.updateUserById))
-    router.get('/user/student/:student_id', passport.authenticate('jwt', { session: false }), allowOnly(config.accessLevels.admin, UserController.getUserIdByStudentId))
+    router.get('/user/student/:student_code', passport.authenticate('jwt', { session: false }), allowOnly(config.accessLevels.admin, UserController.getUserIdByStudentCode))
     router.get('/user', passport.authenticate('jwt', { session: false }), allowOnly(config.accessLevels.admin, UserController.getAllUser))
     router.get('/user/:user_id', passport.authenticate('jwt', { session: false }), allowOnly(config.accessLevels.admin, UserController.getUserById))
     
@@ -23,6 +23,7 @@ let APIRoutes = function (passport) {
     // Student api 
     router.get('/student', passport.authenticate('jwt', { session: false }), allowOnly(config.accessLevels.admin, AdminController.student.getAllStudent))
     router.get('/student/:student_id', passport.authenticate('jwt', { session: false }), allowOnly(config.accessLevels.admin, AdminController.student.getStudentById))
+    router.get('/student/student_code/:student_code', passport.authenticate('jwt', { session: false }), allowOnly(config.accessLevels.admin, AdminController.student.getStudentByCode))
     router.post('/student/create', passport.authenticate('jwt', { session: false }), allowOnly(config.accessLevels.admin, AdminController.student.createStudent))
     router.post('/student/:student_id', passport.authenticate('jwt', { session: false }), allowOnly(config.accessLevels.admin, AdminController.student.updateStudentById))
     router.post('/student/delete/:student_id', passport.authenticate('jwt', { session: false }), allowOnly(config.accessLevels.admin, AdminController.student.deleteStudentById))
@@ -30,6 +31,7 @@ let APIRoutes = function (passport) {
     // Subject api
     router.get('/subject', passport.authenticate('jwt', { session: false }), allowOnly(config.accessLevels.user, AdminController.subject.getAllSubject))
     router.get('/subject/:subject_id', passport.authenticate('jwt', { session: false }), allowOnly(config.accessLevels.user, AdminController.subject.getSubjectById))
+    router.get('/subject/subject_code/:subject_code', passport.authenticate('jwt', { session: false }), allowOnly(config.accessLevels.user, AdminController.subject.getSubjectByCode))
     router.post('/subject/create', passport.authenticate('jwt', { session: false }), allowOnly(config.accessLevels.admin, AdminController.subject.createNewSubject))
     router.post('/subject/:subject_id', passport.authenticate('jwt', { session: false }), allowOnly(config.accessLevels.admin, AdminController.subject.updateSubjectById))
     router.post('/subject/delete/:subject_id', passport.authenticate('jwt', { session: false }), allowOnly(config.accessLevels.admin, AdminController.subject.deleteSubjectById))
@@ -58,6 +60,7 @@ let APIRoutes = function (passport) {
     // Exam schedule api
     router.get('/exam_schedule', passport.authenticate('jwt', { session: false }), allowOnly(config.accessLevels.user, AdminController.exam_schedule.getAllExamSchedule))
     router.get('/exam_schedule/:exam_schedule_id', passport.authenticate('jwt', { session: false }), allowOnly(config.accessLevels.user, AdminController.exam_schedule.getExamScheduleById))
+    router.get('/exam_schedule/exam_id/:exam_id', passport.authenticate('jwt', { session: false }), allowOnly(config.accessLevels.user, AdminController.exam_schedule.getAllExamScheduleByExamId))
     router.post('/exam_schedule/create', passport.authenticate('jwt', { session: false }), allowOnly(config.accessLevels.admin, AdminController.exam_schedule.createNewExamSchedule))
     router.post('/exam_schedule/:exam_schedule_id', passport.authenticate('jwt', { session: false }), allowOnly(config.accessLevels.admin, AdminController.exam_schedule.updateExamScheduleById))
     router.post('/exam_schedule/delete/:exam_schedule_id', passport.authenticate('jwt', { session: false }), allowOnly(config.accessLevels.admin, AdminController.exam_schedule.deleteExamScheduleById))

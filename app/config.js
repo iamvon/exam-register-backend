@@ -12,11 +12,12 @@ config.db.details = {
     host: 'localhost',
     port: 3306,
     dialect: 'mysql',
+    logging: false,
     define: {
         charset: 'utf8',
         collate: 'utf8_general_ci',
         timestamps: false,
-        freezeTableName: true
+        freezeTableName: true,
     }
 }
 

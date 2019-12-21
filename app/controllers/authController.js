@@ -42,7 +42,7 @@ AuthController.signUp = function (req, res) {
                 }
 
                 return User.create(newUser).then(function () {
-                    res.status(201).json(
+                    res.status(200).json(
                         {
                             success: true,
                             data: {},
@@ -165,7 +165,7 @@ AuthController.rejectRefreshToken = function (req, res) {
     if (refreshToken in refreshTokens) {
         delete refreshTokens[refreshToken]
     }
-    res.status(204).json({
+    return res.status(200).json({
         success: true,
         data: {},
         message: 'Delete refresh token successfully'

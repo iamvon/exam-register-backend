@@ -27,7 +27,7 @@ ExamController.createNewExam = function (req, res) {
 
             // createing new exam
             return Exam.create(newExam).then(function () {
-                res.status(201).json({
+                res.status(200).json({
                     success: true,
                     data: { exam_id: newExam.exam_id },
                     message: `Exam ${req.body.exam_name} - ${req.body.school_year} created!`

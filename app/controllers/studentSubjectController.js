@@ -29,7 +29,7 @@ StudentSubjectController.createNewStudentSubject = function (req, res) {
 
             // creating new student-subject
             return StudentSubject.create(newStudentSubject).then(function () {
-                res.status(201).json({
+                res.status(200).json({
                         success: true,
                         data: {
                             student_subject_id: newStudentSubject.student_subject_id

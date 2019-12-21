@@ -27,7 +27,7 @@ SubjectController.createNewSubject = function (req, res) {
 
             // creating new subject
             return Subject.create(newSubject).then(function () {
-                res.status(201).json({
+                res.status(200).json({
                     success: true,
                     data: {
                         subject_id: newSubject.subject_id
@@ -71,6 +71,30 @@ SubjectController.getSubjectById = function (req, res) {
                 success: true,
                 data: data,
                 message: `Get subject ${subject_id} from database`
+            })
+        }).catch(function (err) {
+            return next(err)
+        })
+    })
+}
+
+SubjectController.getSubjectByCode = function (req, res) {
+    let subject_code = req.params.subject_code
+    db.sync().then(function () {
+        Subject.findOne({ where: { subject_code: subject_code } }).then(function (data) {
+            if (!data) {
+                res.status(403).json({
+                    success: false,
+                    data: {},
+                    message: `Subject ${subject_code} not exist!`
+                })
+                return
+            }
+
+            res.status(200).json({
+                success: true,
+                data: data,
+                message: `Get subject ${subject_code} from database`
             })
         }).catch(function (err) {
             return next(err)

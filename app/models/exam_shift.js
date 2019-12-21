@@ -17,11 +17,13 @@ let ExamShiftDefinition = {
 
     start_time: {
         type: 'TIMESTAMP',
+        defaultValue: Sequelize.literal('CURRENT_TIMESTAMP'),
         allowNull: false,
     },
 
     end_time: {
         type: 'TIMESTAMP',
+        defaultValue: Sequelize.literal('CURRENT_TIMESTAMP'),
         allowNull: false,
     },
 

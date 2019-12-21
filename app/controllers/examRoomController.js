@@ -31,7 +31,7 @@ ExamRoomController.createNewExamRoom = function (req, res) {
 
             // creating new exam room
             return ExamRoom.create(newExamRoom).then(function () {
-                res.status(201).json({
+                res.status(200).json({
                     success: true,
                     data: {
                         exam_room_id: newExamRoom.exam_room_id

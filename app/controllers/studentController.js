@@ -5,14 +5,16 @@ let Sequelize = require('sequelize'),
     User = require('../models/user'),
     db = require('../services/database'),
     axios = require('axios'),
-    config = require('../config')
+    config = require('../config'),
+    { uuid } = require('uuidv4')
 
 let StudentController = {}
 
 StudentController.createStudent = function (req, res) {
     db.sync().then(function () {
         let newStudent = {
-            student_id: req.body.student_id,
+            student_id: uuid(),
+            student_code: req.body.student_code,
             avatar_url: req.body.avatar_url,
             name: req.body.name,
             email: req.body.email,
@@ -22,12 +24,12 @@ StudentController.createStudent = function (req, res) {
             date_birth: req.body.date_birth,
         }
 
-        Student.findOne({ where: { student_id: req.body.student_id } }).then(function (student) {
+        Student.findOne({ where: { student_code: req.body.student_code } }).then(function (student) {
             if (student) {
                 res.status(403).json({
                     success: false,
                     data: {},
-                    message: `Student ${req.body.student_id} already exists!`
+                    message: `Student ${req.body.student_code} already exists!`
                 })
                 return
             }
@@ -36,8 +38,8 @@ StudentController.createStudent = function (req, res) {
             return Student.create(newStudent).then(function () {
                 // Creating account for new student 
                 axios.post('/api/signup', {
-                    username: req.body.student_id,
-                    password: req.body.date_birth.replace(/-/g, ''),
+                    username: req.body.student_code,
+                    password: req.body.student_code,
                     email: req.body.email,
                 }, {
                     proxy: {
@@ -52,10 +54,13 @@ StudentController.createStudent = function (req, res) {
                         console.log(error);
                     });
 
-                res.status(201).json({
+                res.status(200).json({
                     success: true,
-                    data: {},
-                    message: `Student ${req.body.student_id} created!`
+                    data: {
+                        student_id: newStudent.student_id,
+                        student_code: newStudent.student_code
+                    },
+                    message: `Student ${req.body.name} - ${req.body.student_code} created!`
                 });
             })
         })
@@ -100,9 +105,34 @@ StudentController.getStudentById = function (req, res) {
     })
 }
 
+StudentController.getStudentByCode = function (req, res) {
+    let student_code = req.params.student_code
+    db.sync().then(function () {
+        Student.findOne({ where: { student_code: student_code } }).then(function (data) {
+            if (!data) {
+                res.status(403).json({
+                    success: false,
+                    data: {},
+                    message: `Student ${student_code} not exist!`
+                })
+                return
+            }
+
+            res.status(200).json({
+                success: true,
+                data: data,
+                message: `Get student ${student_code} from database`
+            })
+        }).catch(function (err) {
+            return next(err)
+        })
+    })
+}
+
 StudentController.updateStudentById = function (req, res) {
     let student_id = req.params.student_id
     let updateStudent = {
+        student_code: req.body.student_code,
         avatar_url: req.body.avatar_url,
         name: req.body.name,
         email: req.body.email,
@@ -124,6 +154,7 @@ StudentController.updateStudentById = function (req, res) {
             }
 
             data.update({
+                student_code: req.body.student_code,
                 avatar_url: updateStudent.avatar_url,
                 name: updateStudent.name,
                 email: updateStudent.email,
@@ -165,6 +196,26 @@ StudentController.deleteStudentById = function (req, res) {
                     data: {},
                     message: `Student ${student_id} deleted!`
                 })
+            })
+        })
+
+        // Also delete user account of student 
+        User.findOne({ where: { username: req.body.student_code } }).then(function (user) {
+            if (!user) {
+                res.status(403).json({
+                    success: false,
+                    data: {},
+                    message: `User ${student_code} not exist!`
+                })
+                return
+            }
+
+            return User.destroy({ where: { username: req.body.student_code } }).then(function () {
+                res.status(200).json({
+                    success: true,
+                    data: {},
+                    message: `User ${student_code} deleted!`
+                });
             })
         })
     })
