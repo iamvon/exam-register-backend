@@ -83,89 +83,51 @@ ExamScheduleController.getExamScheduleById = function (req, res) {
     })
 }
 
-function getSubjectFromSubjectId(subjectId) {
-    db.sync().then(function () {
-        Subject.findOne({ where: { subject_id: subjectId } }).then(function (subject) {
-            if (!subject) {
-                console.log(`Subject ${subjectId} not exist!`)
-                return
-            }
-            console.log(subject.dataValues)
-
-            return subject.dataValues
-        }).catch(function (err) {
-            return next(err)
-        })
-    })
-}
-
-function getExamRoomFromExamRoomId(examRoomId) {
-    db.sync().then(function () {
-        ExamRoom.findOne({ where: { exam_room_id: examRoomId } }).then(function (examRoom) {
-            if (!examRoom) {
-                console.log(`Exam room ${examRoomId} not exist!`)
-                return
-            }
-            console.log(examRoom.dataValues)
-
-            return examRoom.dataValues
-        }).catch(function (err) {
-            return next(err)
-        })
-    })
-}
-
-function getExamShiftFromExamShiftId(examShiftId) {
-    db.sync().then(function () {
-        ExamShift.findOne({ where: { exam_shift_id: examShiftId } }).then(function (examShift) {
-            if (!examShift) {
-                console.log(`Exam shift ${examShiftId} not exist!`)
-                return
-            }
-            console.log(examShift.dataValues)
-
-            return examShift.dataValues
-        }).catch(function (err) {
-            return next(err)
-        })
-    })
-}
-
 ExamScheduleController.getAllExamScheduleByExamId = function (req, res) {
     let exam_id = req.params.exam_id
-    let subject = [], examRoom = [], examShift = []
-    let resultData = {
-        "subject": subject,
-        "exam_room": examRoom,
-        "exam_shift": examShift
-    }
+    let resultData = []
     db.sync().then(function () {
         ExamSchedule.findAll({ where: { exam_id: exam_id } }).then(function (data) {
             if (!data) {
                 res.status(403).json({
                     success: false,
                     data: {},
-                    message: `All exam schedules of exam ${exam_id} not exist!`
+                    message: `Exam schedule of exam ${exam_id} not exist!`
                 })
                 return
             }
 
-            data.forEach(item => {
-                subject.push(getSubjectFromSubjectId(item.dataValues.subject_id))
-                console.log(getSubjectFromSubjectId(item.dataValues.subject_id))
-                examRoom.push(getExamRoomFromExamRoomId(item.dataValues.exam_room_id))
-                console.log(getExamRoomFromExamRoomId(item.dataValues.exam_room_id))
-                examShift.push(getExamShiftFromExamShiftId(item.dataValues.exam_shift_id))
-                console.log(getExamShiftFromExamShiftId(item.dataValues.exam_shift_id))
-            })
+            data.forEach((item, index) => {
+                let subject = [], examRoom = [], examShift = []
+                let scheduleData = {
+                    "subject": subject,
+                    "exam_room": examRoom,
+                    "exam_shift": examShift
+                }
 
-            res.status(200).json({
-                success: true,
-                data: resultData,
-                message: `Get all exam schedules of exam ${exam_id} from database`
+                Subject.findOne({ where: { subject_id: item.dataValues.subject_id } }).then((data) => { subject.push(data.dataValues) })
+                    .then(ExamRoom.findOne({ where: { exam_room_id: item.dataValues.exam_room_id } }).then((data) => { examRoom.push(data.dataValues) })
+                        .then(ExamShift.findOne({ where: { exam_shift_id: item.dataValues.exam_shift_id } }).then((data) => { examShift.push(data.dataValues) })
+                            .then(() => {
+                                resultData.push(scheduleData)
+
+                                subject = [], examRoom = [], examShift = []
+                                scheduleData = {
+                                    "subject": subject,
+                                    "exam_room": examRoom,
+                                    "exam_shift": examShift
+                                }
+
+                                if (index == data.length - 1) {
+                                    res.status(200).json({
+                                        success: true,
+                                        data: resultData,
+                                        message: `Get all exam schedules of exam ${exam_id} from database`
+                                    })
+                                }
+                            }))
+                    )
             })
-        }).catch(function (err) {
-            return next(err)
         })
     })
 }
