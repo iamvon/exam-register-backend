@@ -69,7 +69,7 @@ ExamController.getExamById = function (req, res) {
         ExamSchedule.findOne({ where: { exam_id: exam_id } }).then(function (data) {
             if (!data) {
                 return res.status(403).json({
-                    success: false,
+                    success: true,
                     data: {},
                     message: `Table exam_schedule is empty!`
                 })
@@ -107,30 +107,6 @@ ExamController.getExamById = function (req, res) {
         })
     })
 }
-
-// ExamController.getExamById = function (req, res) {
-//     let exam_id = req.params.exam_id
-//     db.sync().then(function () {
-//         Exam.findOne({ where: { exam_id: exam_id } }).then(function (data) {
-//             if (!data) {
-//                 res.status(403).json({
-//                     success: false,
-//                     data: {},
-//                     message: `Exam ${exam_id} not exist!`
-//                 })
-//                 return
-//             }
-
-//             res.status(200).json({
-//                 success: true,
-//                 data: data,
-//                 message: `Get exam ${exam_id} from database`
-//             })
-//         }).catch(function (err) {
-//             return next(err)
-//         })
-//     })
-// }
 
 ExamController.updateExamById = function (req, res) {
     let exam_id = req.params.exam_id
