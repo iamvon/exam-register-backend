@@ -15,11 +15,10 @@ ExamRoomController.createNewExamRoom = function (req, res) {
             exam_id: req.body.exam_id,
             room_place: req.body.room_place,
             room_name: req.body.room_name,
-            computer_max_amount: req.body.computer_max_amount,
-            computer_amount: req.body.computer_amount
+            computer_max_amount: req.body.computer_max_amount
         }
 
-        ExamRoom.findOne({ where: { exam_id: newExamRoom.exam_id, room_place: newExamRoom.room_place, room_name: newExamRoom.room_name, computer_max_amount: newExamRoom.computer_max_amount, computer_amount: newExamRoom.computer_amount } }).then(function (data) {
+        ExamRoom.findOne({ where: { exam_id: newExamRoom.exam_id, room_place: newExamRoom.room_place, room_name: newExamRoom.room_name, computer_max_amount: newExamRoom.computer_max_amount } }).then(function (data) {
             if (data) {
                 res.status(403).json({
                     success: false,
@@ -87,8 +86,7 @@ ExamRoomController.updateExamRoomById = function (req, res) {
         exam_id: req.body.exam_id,
         room_place: req.body.room_place,
         room_name: req.body.room_name,
-        computer_max_amount: req.body.computer_max_amount,
-        computer_amount: req.body.computer_amount
+        computer_max_amount: req.body.computer_max_amount
     }
 
     db.sync().then(function () {
@@ -107,7 +105,6 @@ ExamRoomController.updateExamRoomById = function (req, res) {
                 room_place: updateExamRoom.room_place,
                 room_name: updateExamRoom.room_name,
                 computer_max_amount: updateExamRoom.computer_max_amount,
-                computer_amount: updateExamRoom.computer_amount,
                 updated_at: Sequelize.literal('CURRENT_TIMESTAMP')
             }).then(function () {
                 res.status(200).json({

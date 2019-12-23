@@ -11,6 +11,7 @@ ExamShiftController.createNewExamShift = function (req, res) {
     db.sync().then(function () {
         let newExamShift = {
             exam_shift_id: uuid(),
+            exam_shift_name: req.body.exam_shift_name, 
             exam_id: req.body.exam_id,
             start_time: req.body.start_time,
             end_time: req.body.end_time
@@ -82,6 +83,7 @@ ExamShiftController.getExamShiftById = function (req, res) {
 ExamShiftController.updateExamShiftById = function (req, res) {
     let exam_shift_id = req.params.exam_shift_id
     let updateExamShift = {
+        exam_shift_name: req.body.exam_shift_name, 
         exam_id: req.body.exam_id,
         start_time: req.body.start_time,
         end_time: req.body.end_time
@@ -98,6 +100,7 @@ ExamShiftController.updateExamShiftById = function (req, res) {
             }
 
             data.update({
+                exam_shift_name: req.body.exam_shift_name, 
                 exam_id: updateExamShift.exam_id,
                 start_time: updateExamShift.start_time,
                 end_time: updateExamShift.end_time,

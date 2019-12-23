@@ -4,8 +4,7 @@ let Sequelize = require('sequelize'),
     bcrypt = require('bcrypt')
 
 let config = require('../config'),
-    db = require('../services/database'),
-    StudentSubject = require('../models/student_subject')
+    db = require('../services/database')
 
 let ExamScheduleDefinition = {
     exam_schedule_id: {
@@ -28,6 +27,5 @@ let ExamScheduleDefinition = {
 }
 
 let ExamSchedule = db.define('exam_schedule', ExamScheduleDefinition)
-ExamSchedule.hasMany(StudentSubject, { foreignKey: 'exam_schedule_id' })
 
 module.exports = ExamSchedule

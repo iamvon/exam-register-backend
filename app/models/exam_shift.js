@@ -15,6 +15,11 @@ let ExamShiftDefinition = {
         primaryKey: true,
     },
 
+    exam_shift_name: {
+        type: Sequelize.STRING,
+        allowNull: false,
+    },
+
     start_time: {
         type: 'TIMESTAMP',
         defaultValue: Sequelize.literal('CURRENT_TIMESTAMP'),

@@ -81,7 +81,7 @@ ExamScheduleController.getExamScheduleById = function (req, res) {
             return next(err)
         })
     })
-}
+}   
 
 ExamScheduleController.getAllExamScheduleByExamId = function (req, res) {
     let exam_id = req.params.exam_id

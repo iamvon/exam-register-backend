@@ -2,7 +2,11 @@
 
 let Sequelize = require('sequelize'),
     Exam = require('../models/exam'),
-    db = require('../services/database')
+    db = require('../services/database'),
+    ExamSchedule = require('../models/exam_schedule'),
+    Subject = require('../models/subject'),
+    ExamRoom = require('../models/exam_room'),
+    ExamShift = require('../models/exam_shift')
 const { uuid } = require('uuidv4')
 
 let ExamController = {}
@@ -51,11 +55,18 @@ ExamController.getAllExam = function (req, res) {
     })
 }
 
-
 ExamController.getExamById = function (req, res) {
     let exam_id = req.params.exam_id
+    let subject = [], examRoom = [], examShift = [], exam = []
+    let resultData = {
+        "exam": exam,
+        "subject": subject,
+        "exam_room": examRoom,
+        "exam_shift": examShift
+    }
+
     db.sync().then(function () {
-        Exam.findOne({ where: { exam_id: exam_id } }).then(function (data) {
+        ExamSchedule.findAll({ where: { exam_id: exam_id } }).then(function (data) {
             if (!data) {
                 res.status(403).json({
                     success: false,
@@ -65,16 +76,50 @@ ExamController.getExamById = function (req, res) {
                 return
             }
 
-            res.status(200).json({
-                success: true,
-                data: data,
-                message: `Get exam ${exam_id} from database`
+            data.forEach((item, index) => {
+                Exam.findOne({ where: { exam_id: exam_id } }).then((data) => { exam.push(data.dataValues) })
+                    .then(Subject.findOne({ where: { subject_id: item.dataValues.subject_id } }).then((data) => { subject.push(data.dataValues) })
+                        .then(ExamRoom.findOne({ where: { exam_room_id: item.dataValues.exam_room_id } }).then((data) => { examRoom.push(data.dataValues) })
+                            .then(ExamShift.findOne({ where: { exam_shift_id: item.dataValues.exam_shift_id } }).then((data) => { examShift.push(data.dataValues) })
+                                .then(() => {   
+                                    if (index == data.length - 1) {
+                                        res.status(200).json({
+                                            success: true,
+                                            data: resultData,
+                                            message: `Get all exam data of exam ${exam_id} from database`
+                                        })
+                                    }
+                                    exam = []
+                                }))
+                        ))
             })
-        }).catch(function (err) {
-            return next(err)
         })
     })
 }
+
+// ExamController.getExamById = function (req, res) {
+//     let exam_id = req.params.exam_id
+//     db.sync().then(function () {
+//         Exam.findOne({ where: { exam_id: exam_id } }).then(function (data) {
+//             if (!data) {
+//                 res.status(403).json({
+//                     success: false,
+//                     data: {},
+//                     message: `Exam ${exam_id} not exist!`
+//                 })
+//                 return
+//             }
+
+//             res.status(200).json({
+//                 success: true,
+//                 data: data,
+//                 message: `Get exam ${exam_id} from database`
+//             })
+//         }).catch(function (err) {
+//             return next(err)
+//         })
+//     })
+// }
 
 ExamController.updateExamById = function (req, res) {
     let exam_id = req.params.exam_id

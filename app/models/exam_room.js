@@ -24,12 +24,7 @@ let ExamRoomDefinition = {
         type: Sequelize.INTEGER,
         allowNull: false,
     },
-
-    computer_amount: {
-        type: Sequelize.INTEGER,
-        allowNull: false,
-    },
-
+    
     room_name: {
         type: Sequelize.STRING,
         allowNull: false,
