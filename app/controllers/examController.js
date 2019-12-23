@@ -66,6 +66,17 @@ ExamController.getExamById = function (req, res) {
     }
 
     db.sync().then(function () {
+        ExamSchedule.findOne({ where: { exam_id: exam_id } }).then(function (data) {
+            if (!data) {
+                return res.status(403).json({
+                    success: false,
+                    data: {},
+                    message: `Table exam_schedule is empty!`
+                })
+            }
+            return
+        })
+
         ExamSchedule.findAll({ where: { exam_id: exam_id } }).then(function (data) {
             if (!data) {
                 res.status(403).json({
@@ -81,7 +92,7 @@ ExamController.getExamById = function (req, res) {
                     .then(Subject.findOne({ where: { subject_id: item.dataValues.subject_id } }).then((data) => { subject.push(data.dataValues) })
                         .then(ExamRoom.findOne({ where: { exam_room_id: item.dataValues.exam_room_id } }).then((data) => { examRoom.push(data.dataValues) })
                             .then(ExamShift.findOne({ where: { exam_shift_id: item.dataValues.exam_shift_id } }).then((data) => { examShift.push(data.dataValues) })
-                                .then(() => {   
+                                .then(() => {
                                     if (index == data.length - 1) {
                                         res.status(200).json({
                                             success: true,
