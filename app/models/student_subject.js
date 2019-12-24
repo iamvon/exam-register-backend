@@ -20,6 +20,11 @@ let StudentSubjectDefinition = {
         allowNull: false
     },
 
+    exam_schedule_id: {
+        type: Sequelize.UUID,
+        unique: true,
+        allowNull: true,
+    },
     created_at: {
         type: 'TIMESTAMP',
         defaultValue: Sequelize.literal('CURRENT_TIMESTAMP'),

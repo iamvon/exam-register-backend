@@ -4,7 +4,6 @@ let Sequelize = require('sequelize'),
     Student = require('../models/student'),
     User = require('../models/user'),
     db = require('../services/database'),
-    axios = require('axios'),
     config = require('../config'),
     { uuid } = require('uuidv4')
 
@@ -12,56 +11,96 @@ let StudentController = {}
 
 StudentController.createStudent = function (req, res) {
     db.sync().then(function () {
-        let newStudent = {
-            student_id: uuid(),
-            student_code: req.body.student_code,
-            avatar_url: req.body.avatar_url,
-            name: req.body.name,
-            email: req.body.email,
-            gender: req.body.gender,
-            phone_number: req.body.phone_number,
-            class: req.body.class,
-            date_birth: req.body.date_birth,
-        }
+        let studentInputData = JSON.parse(JSON.stringify(req.body))
+        let listNewStudentCreated = []
+        let listStudentExisted = []
+        let listNewUserCreated = []
+        let listUserExisted = []
 
-        Student.findOne({ where: { student_code: req.body.student_code } }).then(function (student) {
-            if (student) {
-                res.status(403).json({
-                    success: false,
-                    data: {},
-                    message: `Student ${req.body.student_code} already exists!`
-                })
-                return
+        studentInputData.forEach((student, index) => {
+            let newStudent = {
+                student_id: uuid(),
+                student_code: student.student_code,
+                avatar_url: student.avatar_url,
+                name: student.name,
+                email: student.email,
+                gender: student.gender,
+                phone_number: student.phone_number,
+                class: student.class,
+                date_birth: student.date_birth,
             }
 
-            // createing new student
-            return Student.create(newStudent).then(function () {
-                // Creating account for new student 
-                axios.post('/api/signup', {
-                    username: req.body.student_code,
-                    password: req.body.student_code,
-                    email: req.body.email,
-                }, {
-                    proxy: {
-                        host: config.server.host,
-                        port: config.server.port
-                    }
-                }
-                ).then(function (res) {
-                    // console.log(res)
-                })
-                    .catch(function (error) {
-                        console.log(error);
-                    });
+            Student.findOne({ where: { student_code: newStudent.student_code } }).then(function (data) {
+                if (data) {
+                    listStudentExisted.push({
+                        student_id: data.dataValues.student_id
+                    })
 
-                res.status(200).json({
-                    success: true,
-                    data: {
+                    if (index == studentInputData.length - 1) {
+                        if (listNewStudentCreated.length == 0 && listNewUserCreated.length == 0) {
+                            res.status(403).json({
+                                success: false,
+                                data: {},
+                                message: `Error when creating new student, please check the console!`
+                            })
+                        }
+                    }
+                    console.log(`Student ${newStudent.student_code} already exists!`)
+                }
+
+                // creating new student
+                Student.create(newStudent).then(function () {
+                    console.log(`New student ${newStudent.student_code} created!`)
+
+                    listNewStudentCreated.push({
                         student_id: newStudent.student_id,
-                        student_code: newStudent.student_code
-                    },
-                    message: `Student ${req.body.name} - ${req.body.student_code} created!`
-                });
+                    })
+
+                    // creating new user
+                    let newUser = {
+                        user_id: uuid(),
+                        username: newStudent.student_code,
+                        password: newStudent.student_code,
+                        email: newStudent.email,
+                        role: config.userRoles.user,
+                    }
+                    listNewUserCreated.push({
+                        user_id: newUser.user_id
+                    })
+
+                    User.findOne({ where: { username: newUser.username } }).then(function (user) {
+                        if (user) {
+                            listUserExisted.push({
+                                user_id: user.dataValues.user_id
+                            })
+                            console.log(`Username ${newUser.username} already exists!`)
+                        }
+
+                        User.create(newUser).then(function (user) {
+                            console.log(`New account created for user: ${newUser.username}`)
+
+                            if (index == studentInputData.length - 1) {
+
+                                if (listNewStudentCreated.length != 0 && listNewUserCreated.length != 0) {
+                                    res.status(200).json({
+                                        success: true,
+                                        data: {
+                                            "new_student_created": listNewStudentCreated,
+                                            "student_existed": listStudentExisted,
+                                            "new_user_created": listNewUserCreated,
+                                            "user_existed": listUserExisted
+                                        },
+                                        message: `Student in list new_student_created and user in list new_user_created created!`
+                                    })
+                                    return
+                                }
+                            }
+                        })
+                    })
+
+                })
+            }).catch(function (err) {
+                return next(err)
             })
         })
     })
@@ -175,47 +214,41 @@ StudentController.updateStudentById = function (req, res) {
     })
 }
 
-StudentController.deleteStudentById = function (req, res) {
-    let student_id = req.params.student_id
+StudentController.deleteStudentByCode = function (req, res) {
+    let student_code = req.params.student_code
     db.sync().then(function () {
 
         // Delete student 
-        Student.findOne({ where: { student_id: student_id } }).then(function (data) {
+        Student.findOne({ where: { student_code: student_code } }).then(function (data) {
             if (!data) {
                 res.status(403).json({
                     success: false,
                     data: {},
-                    message: `Student ${student_id} not exist!`
+                    message: `Student ${student_code} not exist!`
                 })
                 return
             }
 
-            return Student.destroy({ where: { student_id: student_id } }).then(function () {
-                res.status(200).json({
-                    success: true,
-                    data: {},
-                    message: `Student ${student_id} deleted!`
-                })
-            })
-        })
+            Student.destroy({ where: { student_code: student_code } }).then(function () {
+                // Also delete user account of student 
+                User.findOne({ where: { username: student_code } }).then(function (user) {
+                    if (!user) {
+                        res.status(403).json({
+                            success: false,
+                            data: {},
+                            message: `User ${student_code} not exist!`
+                        })
+                        return
+                    }
 
-        // Also delete user account of student 
-        User.findOne({ where: { username: req.body.student_code } }).then(function (user) {
-            if (!user) {
-                res.status(403).json({
-                    success: false,
-                    data: {},
-                    message: `User ${student_code} not exist!`
+                    User.destroy({ where: { username: student_code } }).then(function () {
+                        res.status(200).json({
+                            success: true,
+                            data: {},
+                            message: `Student ${student_code} and user ${student_code} deleted!`
+                        });
+                    })
                 })
-                return
-            }
-
-            return User.destroy({ where: { username: req.body.student_code } }).then(function () {
-                res.status(200).json({
-                    success: true,
-                    data: {},
-                    message: `User ${student_code} deleted!`
-                });
             })
         })
     })

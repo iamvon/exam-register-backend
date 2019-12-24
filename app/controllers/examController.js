@@ -68,7 +68,7 @@ ExamController.getExamById = function (req, res) {
     db.sync().then(function () {
         ExamSchedule.findOne({ where: { exam_id: exam_id } }).then(function (data) {
             if (!data) {
-                return res.status(403).json({
+                return res.status(200).json({
                     success: true,
                     data: {},
                     message: `Table exam_schedule is empty!`
