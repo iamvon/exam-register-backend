@@ -46,6 +46,7 @@ StudentController.createStudent = function (req, res) {
                         }
                     }
                     console.log(`Student ${newStudent.student_code} already exists!`)
+                    return
                 }
 
                 // creating new student
@@ -90,14 +91,13 @@ StudentController.createStudent = function (req, res) {
                                             "new_user_created": listNewUserCreated,
                                             "user_existed": listUserExisted
                                         },
-                                        message: `Student in list new_student_created and user in list new_user_created created!`
+                                        message: `Students in list new_student_created and users in list new_user_created created!`
                                     })
                                     return
                                 }
                             }
                         })
                     })
-
                 })
             }).catch(function (err) {
                 return next(err)
