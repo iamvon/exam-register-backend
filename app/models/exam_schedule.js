@@ -4,7 +4,8 @@ let Sequelize = require('sequelize'),
     bcrypt = require('bcrypt')
 
 let config = require('../config'),
-    db = require('../services/database')
+    db = require('../services/database'),
+    StudentSubject = require('../models/student_subject')
 
 let ExamScheduleDefinition = {
     exam_schedule_id: {

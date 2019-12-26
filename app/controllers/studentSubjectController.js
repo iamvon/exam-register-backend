@@ -17,7 +17,7 @@ StudentSubjectController.createNewStudentSubject = function (req, res) {
             can_join_exam: req.body.can_join_exam,
             exam_schedule_id: req.body.exam_schedule_id
         }
-        StudentSubject.findOne({ where: { student_id: newStudentSubject.student_id, subject_id: newStudentSubject.subject_id, can_join_exam: newStudentSubject.can_join_exam, exam_schedule_id: newStudentSubject.exam_schedule_id } }).then(function (data) {
+        StudentSubject.findOne({ where: { student_id: newStudentSubject.student_id, subject_id: newStudentSubject.subject_id } }).then(function (data) {
             if (data) {
                 res.status(403).json({
                         success: false,
@@ -26,6 +26,10 @@ StudentSubjectController.createNewStudentSubject = function (req, res) {
                 })
                 return
             }
+
+            if(!parseInt(newStudentSubject.can_join_exam)) {
+                newStudentSubject.exam_schedule_id = ''
+            } 
 
             // creating new student-subject
             return StudentSubject.create(newStudentSubject).then(function () {
@@ -87,6 +91,11 @@ StudentSubjectController.updateStudentSubjectById = function (req, res) {
         can_join_exam: req.body.can_join_exam,
         exam_schedule_id: req.body.exam_schedule_id
     }
+
+    if(!parseInt(updateStudentSubject.can_join_exam)) {
+        updateStudentSubject.exam_schedule_id = ''
+    }   
+
     db.sync().then(function () {
         StudentSubject.findOne({ where: { student_subject_id: student_subject_id } }).then(function (data) {
             if (!data) {

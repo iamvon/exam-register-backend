@@ -12,10 +12,11 @@ SubjectController.createNewSubject = function (req, res) {
         let newSubject = {
             subject_id: uuid(),
             subject_name: req.body.subject_name,
-            subject_code: req.body.subject_code
+            subject_code: req.body.subject_code,
+            exam_id: req.body.exam_id
         }
 
-        Subject.findOne({ where: { subject_code: req.body.subject_code, subject_name: req.body.subject_name } }).then(function (subject) {
+        Subject.findOne({ where: { subject_code: req.body.subject_code, subject_name: req.body.subject_name, exam_id: req.body.exam_id } }).then(function (subject) {
             if (subject) {
                 res.status(403).json({
                     success: false,
@@ -106,7 +107,8 @@ SubjectController.updateSubjectById = function (req, res) {
     let subject_id = req.params.subject_id
     let updateSubject = {
         subject_name: req.body.subject_name,
-        subject_code: req.body.subject_code
+        subject_code: req.body.subject_code,
+        exam_id: req.body.exam_id
     }
     db.sync().then(function () {
         Subject.findOne({ where: { subject_id: subject_id } }).then(function (data) {
@@ -122,6 +124,7 @@ SubjectController.updateSubjectById = function (req, res) {
             data.update({
                 subject_name: updateSubject.subject_name,
                 subject_code: req.body.subject_code,
+                exam_id: req.body.exam_id,
                 updated_at: Sequelize.literal('CURRENT_TIMESTAMP')
             }).then(function () {
                 res.status(200).json({

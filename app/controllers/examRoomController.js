@@ -55,10 +55,10 @@ ExamRoomController.createNewExamRoom = function (req, res) {
                     if (index == examRoomInputData.length - 1) {
                         res.status(200).json({
                             success: true,
-                            data: {
+                            data: [{
                                 new_exam_room_created: listNewExamRoomCreated,
                                 exam_room_existed: listExamRoomExisted
-                            },
+                            }],
                             message: `Exam rooms in list new_exam_room_created created!`,
                         })
                     }

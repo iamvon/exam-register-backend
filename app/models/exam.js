@@ -7,7 +7,8 @@ let config = require('../config'),
     db = require('../services/database'),
     ExamRoom = require('../models/exam_room'),
     ExamShift = require('../models/exam_shift'),
-    ExamSchedule = require('../models/exam_schedule')
+    ExamSchedule = require('../models/exam_schedule'),
+    Subject = require('../models/subject')
 
 let ExamDefinition = {
     exam_id: {
@@ -43,5 +44,6 @@ let Exam = db.define('exam', ExamDefinition)
 Exam.hasMany(ExamRoom, {foreignKey: 'exam_id'})
 Exam.hasMany(ExamShift, {foreignKey: 'exam_id'})
 Exam.hasMany(ExamSchedule, {foreignKey: 'exam_id'})
+Exam.hasMany(Subject, {foreignKey: 'exam_id'})
 
 module.exports = Exam

@@ -4,8 +4,7 @@ let Sequelize = require('sequelize'),
     bcrypt = require('bcrypt')
 
 let config = require('../config'),
-    db = require('../services/database'),
-    Student = require('../models/student')
+    db = require('../services/database')
 
 let StudentSubjectDefinition = {
     student_subject_id: {
@@ -22,8 +21,7 @@ let StudentSubjectDefinition = {
 
     exam_schedule_id: {
         type: Sequelize.UUID,
-        unique: true,
-        allowNull: true,
+        allowNull: true
     },
     created_at: {
         type: 'TIMESTAMP',
