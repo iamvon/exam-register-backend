@@ -5,7 +5,8 @@ let Sequelize = require('sequelize'),
 
 let config = require('../config'),
     db = require('../services/database'),
-    ExamSubject = require('./exam_subject')
+    StudentSubject = require('../models/student_subject'),
+    ExamSchedule = require('../models/exam_schedule')
 
 let SubjectDefinition = {
     subject_id: {
@@ -14,7 +15,7 @@ let SubjectDefinition = {
         allowNull: false,
         primaryKey: true,
     },
-
+    
     subject_code: {
         type: Sequelize.STRING,
         unique: true,
@@ -24,6 +25,12 @@ let SubjectDefinition = {
     subject_name: {
         type: Sequelize.STRING,
         allowNull: false
+    },
+
+    exam_id: {
+        type: Sequelize.UUID,
+        defaultValue: '',
+        allowNull: true
     },
 
     created_at: {
@@ -39,6 +46,7 @@ let SubjectDefinition = {
 }
 
 let Subject = db.define('subject', SubjectDefinition)
-Subject.hasMany(ExamSubject, { foreignKey: 'subject_id' })
+Subject.hasMany(StudentSubject, { foreignKey: 'subject_id' })
+Subject.hasMany(ExamSchedule, { foreignKey: 'subject_id' })
 
 module.exports = Subject

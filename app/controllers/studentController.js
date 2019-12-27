@@ -38,8 +38,8 @@ StudentController.createStudent = function (req, res) {
 
                     if (index == studentInputData.length - 1) {
                         if (listNewStudentCreated.length == 0 && listNewUserCreated.length == 0) {
-                            res.status(403).json({
-                                success: false,
+                            res.status(200).json({
+                                success: true,
                                 data: {},
                                 message: `Error when creating new student, please check the console!`
                             })

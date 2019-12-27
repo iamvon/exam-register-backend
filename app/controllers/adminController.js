@@ -5,9 +5,8 @@ let StudentController = require('./studentController'),
     ExamController = require('./examController'),
     ExamShiftController = require('./examShiftController'),
     ExamRoomController = require('./examRoomController'),
-    StudentExamSubjectController = require('./studentExamSubjectController'),
-    ExamScheduleController = require('./examScheduleController'),
-    ExamSubjectController = require('./examSubjectController')
+    StudentSubjectController = require('./studentSubjectController'),
+    ExamScheduleController = require('./examScheduleController')
 
 let AdminController = {
     student: StudentController,
@@ -15,9 +14,8 @@ let AdminController = {
     exam: ExamController,
     exam_shift: ExamShiftController,
     exam_room: ExamRoomController,
-    student_exam_subject: StudentExamSubjectController,
-    exam_schedule: ExamScheduleController,
-    exam_subject: ExamSubjectController 
+    student_subject: StudentSubjectController,
+    exam_schedule: ExamScheduleController 
 }
 
 module.exports = AdminController

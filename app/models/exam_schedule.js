@@ -5,7 +5,7 @@ let Sequelize = require('sequelize'),
 
 let config = require('../config'),
     db = require('../services/database'),
-    StudentSubject = require('./student_exam_subject')
+    StudentSubject = require('../models/student_subject')
 
 let ExamScheduleDefinition = {
     exam_schedule_id: {
@@ -14,7 +14,10 @@ let ExamScheduleDefinition = {
         allowNull: false,
         primaryKey: true,
     },
-
+    date: {
+        type: Sequelize.STRING,
+        allowNull: false,
+    },
     created_at: {
         type: 'TIMESTAMP',
         defaultValue: Sequelize.literal('CURRENT_TIMESTAMP'),

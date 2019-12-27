@@ -60,7 +60,6 @@ ExamController.getExamById = function (req, res) {
     let exam_id = req.params.exam_id
 
     db.sync().then(function () {
-
         Exam.hasMany(ExamRoom, { foreignKey: 'exam_id' })
         ExamRoom.belongsTo(Exam, { foreignKey: 'exam_id' })
 

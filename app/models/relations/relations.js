@@ -20,7 +20,6 @@ ExamShift.belongsTo(Exam, {foreignKey: 'exam_id'})
 Exam.hasMany(ExamRoom, {foreignKey: 'exam_id'})
 Exam.hasMany(ExamShift, {foreignKey: 'exam_id'})
 Exam.hasMany(ExamSchedule, {foreignKey: 'exam_id'})
-Exam.hasMany(Subject, {foreignKey: 'exam_id'})
 
 StudentSubject.belongsTo(Student, { foreignKey: 'student_id' })
 StudentSubject.belongsTo(Subject, { foreignKey: 'subject_id' })
@@ -29,4 +28,3 @@ Student.hasMany(StudentSubject, { foreignKey: 'student_id' })
 
 Subject.hasMany(StudentSubject, { foreignKey: 'subject_id' })
 Subject.hasMany(ExamSchedule, { foreignKey: 'subject_id' })
-Subject.belongsTo(Exam, {foreignKey: 'exam_id'})
