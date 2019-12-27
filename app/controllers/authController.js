@@ -102,6 +102,11 @@ AuthController.login = function (req, res) {
                         res.status(200).json({
                             success: true,
                             data: {
+                                user: {
+                                    username: user.dataValues.username,
+                                    email: user.dataValues.email,
+                                    avatar_url: user.dataValues.avatar_url
+                                },
                                 token: 'Bearer ' + token,
                                 role: userRole,
                                 refresh_token: refreshToken

@@ -5,8 +5,7 @@ let Sequelize = require('sequelize'),
 
 let config = require('../config'),
     db = require('../services/database'),
-    StudentSubject = require('./student_exam_subject'),
-    ExamSchedule = require('../models/exam_schedule')
+    ExamSubject = require('./exam_subject')
 
 let SubjectDefinition = {
     subject_id: {
@@ -40,7 +39,6 @@ let SubjectDefinition = {
 }
 
 let Subject = db.define('subject', SubjectDefinition)
-Subject.hasMany(StudentSubject, { foreignKey: 'subject_id' })
-Subject.hasMany(ExamSchedule, { foreignKey: 'subject_id' })
+Subject.hasMany(ExamSubject, { foreignKey: 'subject_id' })
 
 module.exports = Subject
