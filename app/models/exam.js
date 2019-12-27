@@ -44,6 +44,5 @@ let Exam = db.define('exam', ExamDefinition)
 Exam.hasMany(ExamRoom, {foreignKey: 'exam_id'})
 Exam.hasMany(ExamShift, {foreignKey: 'exam_id'})
 Exam.hasMany(ExamSchedule, {foreignKey: 'exam_id'})
-Exam.hasMany(Subject, {foreignKey: 'exam_id'})
 
 module.exports = Exam

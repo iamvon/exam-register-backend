@@ -60,14 +60,12 @@ ExamController.getExamById = function (req, res) {
     let exam_id = req.params.exam_id
 
     db.sync().then(function () {
-        Exam.hasMany(Subject, { foreignKey: 'exam_id' })
-        Subject.belongsTo(Exam, { foreignKey: 'exam_id' })
 
         Exam.hasMany(ExamRoom, { foreignKey: 'exam_id' })
         ExamRoom.belongsTo(Exam, { foreignKey: 'exam_id' })
 
-        Exam.hasMany(ExamShift, {foreignKey: 'exam_id'})
-        ExamShift.belongsTo(Exam, {foreignKey: 'exam_id'})
+        Exam.hasMany(ExamShift, { foreignKey: 'exam_id' })
+        ExamShift.belongsTo(Exam, { foreignKey: 'exam_id' })
 
         let examObj, subjectObj, examRoomObj, examShiftObj
         Exam.findAll({ where: { exam_id: exam_id } }).then(exams => {
@@ -79,7 +77,7 @@ ExamController.getExamById = function (req, res) {
                 })
             })
 
-            Subject.findAll({ where: { exam_id: exam_id }, include: [Exam] }).then(subjects => {
+            Subject.findAll().then(subjects => {
                 subjectObj = subjects.map(subject => {
                     return Object.assign({}, {
                         subject_id: subject.subject_id,
