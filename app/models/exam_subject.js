@@ -5,29 +5,20 @@ let Sequelize = require('sequelize'),
 
 let config = require('../config'),
     db = require('../services/database'),
+    StudentExamSubject = require('../models/student_exam_subject'),
     ExamSchedule = require('../models/exam_schedule')
 
-let ExamShiftDefinition = {
-    exam_shift_id: {
+let ExamSubjectDefinition = {
+    exam_subject_id: {
         type: Sequelize.UUID,
         unique: true,
         allowNull: false,
         primaryKey: true,
     },
 
-    exam_shift_name: {
+    date: {
         type: Sequelize.STRING,
-        allowNull: false,
-    },
-
-    start_time: {
-        type: Sequelize.STRING,
-        allowNull: false,
-    },
-
-    end_time: {
-        type: Sequelize.STRING,
-        allowNull: false,
+        allowNull: false
     },
 
     created_at: {
@@ -42,7 +33,8 @@ let ExamShiftDefinition = {
     }
 }
 
-let ExamShift = db.define('exam_shift', ExamShiftDefinition)
-ExamShift.hasMany(ExamSchedule, {foreignKey: 'exam_shift_id'})
+let ExamSubject = db.define('exam_subject', ExamSubjectDefinition)
+ExamSubject.hasMany(StudentExamSubject, { foreignKey: 'exam_subject_id' })
+ExamSubject.hasMany(ExamSchedule, { foreignKey: 'exam_subject_id' })
 
-module.exports = ExamShift
+module.exports = Subject
