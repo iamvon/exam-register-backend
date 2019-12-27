@@ -37,4 +37,4 @@ let ExamSubject = db.define('exam_subject', ExamSubjectDefinition)
 ExamSubject.hasMany(StudentExamSubject, { foreignKey: 'exam_subject_id' })
 ExamSubject.hasMany(ExamSchedule, { foreignKey: 'exam_subject_id' })
 
-module.exports = Subject
+module.exports = ExamSubject

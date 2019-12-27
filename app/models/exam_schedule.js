@@ -5,7 +5,7 @@ let Sequelize = require('sequelize'),
 
 let config = require('../config'),
     db = require('../services/database'),
-    StudentSubject = require('../models/student_subject')
+    StudentSubject = require('./student_exam_subject')
 
 let ExamScheduleDefinition = {
     exam_schedule_id: {

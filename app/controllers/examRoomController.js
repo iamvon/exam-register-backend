@@ -10,59 +10,33 @@ let ExamRoomController = {}
 
 ExamRoomController.createNewExamRoom = function (req, res) {
     db.sync().then(function () {
-        let examRoomInputData = JSON.parse(JSON.stringify(req.body))
-        let listNewExamRoomCreated = []
-        let listExamRoomExisted = []
+        let newExamRoom = {
+            exam_room_id: uuid(),
+            exam_id: req.body.exam_id,
+            room_place: req.body.room_place,
+            room_name: req.body.room_name,
+            computer_max_amount: req.body.computer_max_amount
+        }
 
-        examRoomInputData.forEach((examRoom, index) => {
-            let newExamRoom = {
-                exam_room_id: uuid(),
-                exam_id: examRoom.exam_id,
-                room_place: examRoom.room_place,
-                room_name: examRoom.room_name,
-                computer_max_amount: examRoom.computer_max_amount
+        ExamRoom.findOne({ where: { exam_id: newExamRoom.exam_id, room_place: newExamRoom.room_place, room_name: newExamRoom.room_name, computer_max_amount: newExamRoom.computer_max_amount } }).then(function (data) {
+            if (data) {
+                res.status(403).json({
+                    success: false,
+                    data: {},
+                    message: `This exam room already exists!`
+                })
+                return
             }
 
-            ExamRoom.findOne({ where: { exam_id: newExamRoom.exam_id, room_place: newExamRoom.room_place, room_name: newExamRoom.room_name, computer_max_amount: newExamRoom.computer_max_amount } }).then(function (data) {
-                if (data) {
-                    listExamRoomExisted.push({
-                        exam_room_id: data.dataValues.exam_room_id
-                        
-                    })
-                    // console.log(listNewExamRoomCreated.length)
-                    if (index == examRoomInputData.length - 1) {
-                        if (listNewExamRoomCreated.length == 0) {
-                            res.status(403).json({
-                                success: false,
-                                data: {},
-                                message: `Error when creating new exam room, please check the console!`
-                            })
-                        }
-                    }
-                    console.log('This exam room already exists!')
-                    return
-                }
-
-                // Creating new exam room
-                ExamRoom.create(newExamRoom).then(function () {
-                    listNewExamRoomCreated.push({
+            // creating new exam room
+            return ExamRoom.create(newExamRoom).then(function () {
+                res.status(200).json({
+                    success: true,
+                    data: {
                         exam_room_id: newExamRoom.exam_room_id
-                    })
-                    // console.log(listNewExamRoomCreated.length)
-
-                    console.log(`New exam room ${newExamRoom.exam_room_id} created!`)
-
-                    if (index == examRoomInputData.length - 1) {
-                        res.status(200).json({
-                            success: true,
-                            data: [{
-                                new_exam_room_created: listNewExamRoomCreated,
-                                exam_room_existed: listExamRoomExisted
-                            }],
-                            message: `Exam rooms in list new_exam_room_created created!`,
-                        })
-                    }
-                })
+                    },
+                    message: `New exam room created!`,
+                });
             })
         })
     })

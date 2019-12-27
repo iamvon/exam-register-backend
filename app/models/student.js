@@ -5,7 +5,7 @@ let Sequelize = require('sequelize'),
 
 let config = require('../config'),
     db = require('../services/database'),
-    StudentSubject = require('../models/student_subject')
+    StudentExamSubject = require('../models/student_exam_subject')
 
 let StudentDefinition = {
     student_id: {
@@ -70,6 +70,6 @@ let StudentDefinition = {
 }
 
 let Student = db.define('student', StudentDefinition)
-Student.hasMany(StudentSubject, { foreignKey: 'student_id' })
+Student.hasMany(StudentExamSubject, { foreignKey: 'student_id' })
 
 module.exports = Student

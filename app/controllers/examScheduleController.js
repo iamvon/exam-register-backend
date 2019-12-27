@@ -5,7 +5,7 @@ let Sequelize = require('sequelize'),
     Subject = require('../models/subject'),
     ExamRoom = require('../models/exam_room'),
     ExamShift = require('../models/exam_shift'),
-    StudentSubject = require('../models/student_subject'),
+    StudentSubject = require('../models/student_exam_subject'),
     Exam = require('../models/exam'),
     db = require('../services/database')
 
@@ -19,12 +19,12 @@ ExamScheduleController.createNewExamSchedule = function (req, res) {
         let newExamSchedule = {
             exam_schedule_id: uuid(),
             exam_shift_id: req.body.exam_shift_id,
-            subject_id: req.body.subject_id,
+            exam_subject_id: req.body.exam_subject_id,
             exam_room_id: req.body.exam_room_id,
             exam_id: req.body.exam_id
         }
 
-        ExamSchedule.findOne({ where: { exam_shift_id: newExamSchedule.exam_shift_id, subject_id: newExamSchedule.subject_id, exam_room_id: newExamSchedule.exam_room_id } }).then(function (data) {
+        ExamSchedule.findOne({ where: { exam_shift_id: newExamSchedule.exam_shift_id, exam_subject_id: newExamSchedule.exam_subject_id, exam_room_id: newExamSchedule.exam_room_id } }).then(function (data) {
             if (data) {
                 res.status(403).json({
                     success: false,
@@ -126,9 +126,9 @@ ExamScheduleController.getAllExamScheduleByExamId = function (req, res) {
                                 exam.push(examObj)
                             }
                         })
-                            .then(Subject.findOne({ where: { subject_id: item.dataValues.subject_id } }).then((data) => {
+                            .then(Subject.findOne({ where: { exam_subject_id: item.dataValues.exam_subject_id } }).then((data) => {
                                 let subjectObj = Object.assign({}, {
-                                    subject_id: data.dataValues.subject_id,
+                                    exam_subject_id: data.dataValues.exam_subject_id,
                                     subject_code: data.dataValues.subject_code,
                                     subject_name: data.dataValues.subject_name
                                 })
@@ -186,7 +186,7 @@ ExamScheduleController.updateExamScheduleById = function (req, res) {
     let exam_schedule_id = req.params.exam_schedule_id
     let updateExamSchedule = {
         exam_shift_id: req.body.exam_shift_id,
-        subject_id: req.body.subject_id,
+        exam_subject_id: req.body.exam_subject_id,
         exam_room_id: req.body.exam_room_id,
         exam_id: req.body.exam_id
     }
@@ -203,7 +203,7 @@ ExamScheduleController.updateExamScheduleById = function (req, res) {
 
             data.update({
                 exam_shift_id: updateExamSchedule.exam_shift_id,
-                subject_id: updateExamSchedule.subject_id,
+                exam_subject_id: updateExamSchedule.exam_subject_id,
                 exam_room_id: updateExamSchedule.exam_room_id,
                 exam_id: req.body.exam_id,
                 updated_at: Sequelize.literal('CURRENT_TIMESTAMP')

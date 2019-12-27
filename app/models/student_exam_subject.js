@@ -6,8 +6,8 @@ let Sequelize = require('sequelize'),
 let config = require('../config'),
     db = require('../services/database')
 
-let StudentSubjectDefinition = {
-    student_subject_id: {
+let StudentExamSubjectDefinition = {
+    student_exam_subject_id: {
         type: Sequelize.UUID,
         unique: true,
         allowNull: false,
@@ -35,6 +35,6 @@ let StudentSubjectDefinition = {
     }
 }
 
-let StudentSubject = db.define('student_subject', StudentSubjectDefinition)
+let StudentExamSubject = db.define('student_exam_subject', StudentExamSubjectDefinition)
 
-module.exports = StudentSubject
+module.exports = StudentExamSubject
