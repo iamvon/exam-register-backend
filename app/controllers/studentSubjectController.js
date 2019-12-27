@@ -105,10 +105,6 @@ StudentSubjectController.updateStudentSubjectById = function (req, res) {
         exam_schedule_id: req.body.exam_schedule_id
     }
 
-    if (!parseInt(updateStudentSubject.can_join_exam)) {
-        updateStudentSubject.exam_schedule_id = ''
-    }
-
     db.sync().then(function () {
         StudentSubject.findOne({ where: { student_subject_id: student_subject_id } }).then(function (data) {
             if (!data) {
@@ -120,19 +116,29 @@ StudentSubjectController.updateStudentSubjectById = function (req, res) {
                 return
             }
 
-            data.update({
-                student_id: updateStudentSubject.student_id,
-                subject_id: updateStudentSubject.subject_id,
-                can_join_exam: updateStudentSubject.can_join_exam,
-                exam_schedule_id: updateStudentSubject.exam_schedule_id,
-                updated_at: Sequelize.literal('CURRENT_TIMESTAMP')
-            }).then(function () {
-                res.status(200).json({
-                    success: true,
-                    data: {},
-                    message: `Update student-subject ${student_subject_id} successfully`
+            if (data.dataValues.can_join_exam) {
+                data.update({
+                    student_id: updateStudentSubject.student_id,
+                    subject_id: updateStudentSubject.subject_id,
+                    can_join_exam: 1,
+                    exam_schedule_id: updateStudentSubject.exam_schedule_id,
+                    updated_at: Sequelize.literal('CURRENT_TIMESTAMP')
+                }).then(function () {
+                    res.status(200).json({
+                        success: true,
+                        data: {},
+                        message: `Update student-subject ${student_subject_id} successfully`
+                    })
                 })
-            })
+            } else {
+                res.status(403).json({
+                    success: false,
+                    data: {
+                        can_join_exam: 0,
+                    },
+                    message: `This student can not join the exam!`
+                }) 
+            }
         })
     })
 }

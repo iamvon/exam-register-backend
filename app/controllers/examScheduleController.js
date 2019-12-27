@@ -136,6 +136,7 @@ ExamScheduleController.getAllExamScheduleByExamId = function (req, res) {
                                 subject.push(subjectObj)
                             })
                                 .then(ExamRoom.findOne({ where: { exam_room_id: item.dataValues.exam_room_id } }).then((data) => {
+                                    console.log(item.dataValues.exam_room_id)
                                     let examRoomObj = Object.assign({}, {
                                         exam_room_id: data.dataValues.exam_room_id,
                                         room_place: data.dataValues.room_place,
@@ -220,6 +221,11 @@ ExamScheduleController.updateExamScheduleById = function (req, res) {
             })
         })
     })
+}
+
+// TODO
+ExamScheduleController.getAllStudentSchedule = function (req, res) {
+
 }
 
 ExamScheduleController.deleteExamScheduleById = function (req, res) {
