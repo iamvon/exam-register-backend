@@ -27,12 +27,6 @@ let SubjectDefinition = {
         allowNull: false
     },
 
-    exam_id: {
-        type: Sequelize.UUID,
-        defaultValue: '',
-        allowNull: true
-    },
-
     created_at: {
         type: 'TIMESTAMP',
         defaultValue: Sequelize.literal('CURRENT_TIMESTAMP'),
