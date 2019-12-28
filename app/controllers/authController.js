@@ -6,7 +6,8 @@ let jwt = require('jsonwebtoken')
 let Sequelize = require('sequelize'),
     config = require('../config'),
     db = require('../services/database'),
-    User = require('../models/user')
+    User = require('../models/user'),
+    Student = require('../models/student')
 
 let AuthController = {}
 let randtoken = require('rand-token')
@@ -96,24 +97,65 @@ AuthController.login = function (req, res) {
                             userRole = 'guest'
                         } else if (user.role == 2) {
                             userRole = 'user'
+                            let student_code = user.dataValues.username
+
+                            const studentInfo = Student.findOne({ where: { student_code: student_code } }).then(function (student) {
+                                if (!student) {
+                                    console.log(`Student ${student_code} not exist!`)
+                                    return
+                                }
+
+                                return Object.assign({}, {
+                                    student_id: student.student_id,
+                                    student_code: student.student_code,
+                                    name: student.name,
+                                    email: student.email,
+                                    gender: student.gender,
+                                    phone_number: student.phone_number,
+                                    class: student.class,
+                                    date_birth: student.date_birth 
+                                })
+                            })
+
+                            Promise.resolve(studentInfo).then(student => {
+                                res.status(200).json({
+                                    success: true,
+                                    data: {
+                                        user: {
+                                            username: user.dataValues.username,
+                                            email: user.dataValues.email,
+                                            avatar_url: user.dataValues.avatar_url,
+                                            student_info: student
+                                        },
+                                        token: 'Bearer ' + token,
+                                        role: userRole,
+                                        refresh_token: refreshToken
+                                    },
+                                    message: `User ${user.username} login successfully`
+
+                                })
+                            })
+
                         } else if (user.role == 4) {
                             userRole = 'admin'
-                        }
-                        res.status(200).json({
-                            success: true,
-                            data: {
-                                user: {
-                                    username: user.dataValues.username,
-                                    email: user.dataValues.email,
-                                    avatar_url: user.dataValues.avatar_url
-                                },
-                                token: 'Bearer ' + token,
-                                role: userRole,
-                                refresh_token: refreshToken
-                            },
-                            message: `User ${user.username} login successfully`
 
-                        })
+                            res.status(200).json({
+                                success: true,
+                                data: {
+                                    user: {
+                                        username: user.dataValues.username,
+                                        email: user.dataValues.email,
+                                        avatar_url: user.dataValues.avatar_url,
+                                    },
+                                    token: 'Bearer ' + token,
+                                    role: userRole,
+                                    refresh_token: refreshToken
+                                },
+                                message: `User ${user.username} login successfully`
+
+                            })
+                        }
+
                     } else {
                         res.status(404).json({
                             success: false,
