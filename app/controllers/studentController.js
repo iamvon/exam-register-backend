@@ -317,7 +317,7 @@ StudentController.getAllStudentSchedule = function (req, res) {
                     let studentId = student.student_id
                     let can_join_exam = student.can_join_exam
                     let registeredExamSchedule = false
-                    if(item.exam_schedule_id === student.exam_schedule_id) {
+                    if (item.exam_schedule_id === student.exam_schedule_id) {
                         registeredExamSchedule = true
                     }
 
@@ -364,14 +364,18 @@ StudentController.getAllStudentSchedule = function (req, res) {
                                                 end_time: data.dataValues.end_time
                                             })
                                             examShift.push(examShiftObj)
-                                        })
-                                            .then(() => {
+
+                                        }).then(
+                                            StudentSubject.findOne({ where: { student_id: studentId, subject_id: subjectObj.subject_id } }).then(data => {
+                                                let student_subject_id = data.dataValues.student_subject_id
+
                                                 scheduleData = {
                                                     exam_schedule_id: item.exam_schedule_id,
                                                     student: {
+                                                        student_subject_id: student_subject_id,
                                                         student_id: studentId,
                                                         can_join_exam: can_join_exam,
-                                                        registered_exam_schedule: registeredExamSchedule 
+                                                        registered_exam_schedule: registeredExamSchedule
                                                     },
                                                     subject: subject,
                                                     exam_room: examRoom,
@@ -393,6 +397,8 @@ StudentController.getAllStudentSchedule = function (req, res) {
                                                     })
                                                 }
                                             })
+                                        )
+
                                         ))
                                 ))
                 })
