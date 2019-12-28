@@ -314,10 +314,11 @@ StudentController.getAllStudentSchedule = function (req, res) {
                     let student = [].concat.apply([], allStudentSubjectObj.filter((studentScheduleObj) => {
                         return studentScheduleObj.subject_id === item.subject_id
                     }))[0]
+                    let studentSubjectId = student.student_subject_id
                     let studentId = student.student_id
                     let can_join_exam = student.can_join_exam
                     let registeredExamSchedule = false
-                    if (item.exam_schedule_id === student.exam_schedule_id) {
+                    if(item.exam_schedule_id === student.exam_schedule_id) {
                         registeredExamSchedule = true
                     }
 
@@ -364,18 +365,15 @@ StudentController.getAllStudentSchedule = function (req, res) {
                                                 end_time: data.dataValues.end_time
                                             })
                                             examShift.push(examShiftObj)
-
-                                        }).then(
-                                            StudentSubject.findOne({ where: { student_id: studentId, subject_id: subjectObj.subject_id } }).then(data => {
-                                                let student_subject_id = data.dataValues.student_subject_id
-
+                                        })
+                                            .then(() => {
                                                 scheduleData = {
                                                     exam_schedule_id: item.exam_schedule_id,
                                                     student: {
-                                                        student_subject_id: student_subject_id,
+                                                        student_subject_id: studentSubjectId,
                                                         student_id: studentId,
                                                         can_join_exam: can_join_exam,
-                                                        registered_exam_schedule: registeredExamSchedule
+                                                        registered_exam_schedule: registeredExamSchedule 
                                                     },
                                                     subject: subject,
                                                     exam_room: examRoom,
@@ -397,8 +395,6 @@ StudentController.getAllStudentSchedule = function (req, res) {
                                                     })
                                                 }
                                             })
-                                        )
-
                                         ))
                                 ))
                 })
