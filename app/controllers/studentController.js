@@ -345,7 +345,7 @@ StudentController.getAllStudentSchedule = function (req, res) {
                                     })
                                     subject.push(subjectObj)
                                 })
-                                    .then(ExamRoom.findOne({ where: { exam_room_id: item.exam_room_id } }).then((data) => {
+                                    .then(ExamRoom.findOneĐ({ where: { exam_room_id: item.exam_room_id } }).then((data) => {
                                         let examRoomObj = Object.assign({}, {
                                             exam_room_id: data.dataValues.exam_room_id,
                                             room_place: data.dataValues.room_place,
