@@ -96,6 +96,30 @@ StudentSubjectController.getStudentSubjectById = function (req, res) {
     })
 }
 
+StudentSubjectController.getStudentSubjectBySubjectId = function (req, res) {
+    let subject_id = req.params.subject_id
+    db.sync().then(function () {
+        StudentSubject.findOne({ where: { subject_id: subject_id } }).then(function (data) {
+            if (!data) {
+                res.status(403).json({
+                    success: false,
+                    data: {},
+                    message: `Student-subject of subject ${subject_id} not exist!`
+                })
+                return
+            }
+
+            res.status(200).json({
+                success: true,
+                data: data,
+                message: `Get student-subject of subject ${subject_id} from database`
+            })
+        }).catch(function (err) {
+            return next(err)
+        })
+    })
+}
+
 StudentSubjectController.updateStudentSubjectById = function (req, res) {
     let student_subject_id = req.params.student_subject_id
     let updateStudentSubject = {

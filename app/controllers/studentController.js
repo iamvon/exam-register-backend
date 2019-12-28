@@ -5,7 +5,13 @@ let Sequelize = require('sequelize'),
     User = require('../models/user'),
     db = require('../services/database'),
     config = require('../config'),
-    { uuid } = require('uuidv4')
+    { uuid } = require('uuidv4'),
+    ExamSchedule = require('../models/exam_schedule'),
+    StudentSubject = require('../models/student_subject'),
+    Subject = require('../models/subject'),
+    ExamRoom = require('../models/exam_room'),
+    ExamShift = require('../models/exam_shift'),
+    Exam = require('../models/exam')
 
 let StudentController = {}
 
@@ -251,6 +257,135 @@ StudentController.deleteStudentByCode = function (req, res) {
                 })
             })
         })
+    })
+}
+
+// TODO
+StudentController.getAllStudentSchedule = function (req, res) {
+    let requestData = {
+        student_id: req.body.student_id,
+        exam_id: req.body.exam_id
+    }
+    db.sync().then(function () {
+        ExamSchedule.findAll({ where: { exam_id: requestData.exam_id } }).then((examSchedules) => {
+            let allExamScheduleObj = examSchedules.map(examSchedule => {
+                return Object.assign({}, {
+                    exam_schedule_id: examSchedule.exam_schedule_id,
+                    exam_shift_id: examSchedule.exam_shift_id,
+                    subject_id: examSchedule.subject_id,
+                    exam_room_id: examSchedule.exam_room_id,
+                    exam_id: examSchedule.exam_id,
+                    date: examSchedule.date,
+                })
+            })
+
+            StudentSubject.findAll({ where: { student_id: requestData.student_id } }).then(studentSubjects => {
+                let allStudentSubjectObj = studentSubjects.map(studentSubject => {
+                    return Object.assign({}, {
+                        student_subject_id: studentSubject.student_subject_id,
+                        student_id: studentSubject.student_id,
+                        subject_id: studentSubject.subject_id,
+                        can_join_exam: studentSubject.can_join_exam,
+                        exam_schedule_id: studentSubject.exam_schedule_id,
+                    })
+                })
+
+                let studentExamScheduleObj = []
+                allStudentSubjectObj.forEach(studentSubjectObj => {
+                    studentExamScheduleObj.push(allExamScheduleObj.filter((examScheduleObj) => {
+                        return examScheduleObj.subject_id === studentSubjectObj.subject_id
+                    }))
+                })
+                let studentExamSchedule = [].concat.apply([], studentExamScheduleObj)
+                // console.log(studentExamSchedule)
+
+                let exam = [], subject = [], examRoom = [], examShift = [], schedule = [], registered_amount = 0
+                let scheduleData = [{
+                    "subject": subject,
+                    "exam_room": examRoom,
+                    "exam_shift": examShift
+                }]
+
+                let resultData = [{
+                    exam: exam,
+                    schedule: schedule
+                }]
+                studentExamSchedule.forEach((item, index) => {
+                    console.log(item.subject_id )
+
+                    exam = [], subject = [], examRoom = [], examShift = [], registered_amount = 0
+                    StudentSubject.findAll({ where: { exam_schedule_id: item.exam_schedule_id } }).then(registeredCount => {
+                        registered_amount = registeredCount.length
+                    })
+                        .then(
+                            Exam.findOne({ where: { exam_id: requestData.exam_id } }).then((data) => {
+                                if (index == 0) {
+                                    let examObj = Object.assign({}, {
+                                        exam_id: data.dataValues.exam_id,
+                                        exam_name: data.dataValues.exam_name,
+                                        school_year: data.dataValues.school_year
+                                    })
+                                    exam.push(examObj)
+                                }
+                            })
+                                .then(Subject.findOne({ where: { subject_id: item.subject_id } }).then((data) => {
+
+                                    let subjectObj = Object.assign({}, {
+                                        subject_id: data.dataValues.subject_id,
+                                        subject_code: data.dataValues.subject_code,
+                                        subject_name: data.dataValues.subject_name
+                                    })
+                                    subject.push(subjectObj)
+                                })
+                                    .then(ExamRoom.findOne({ where: { exam_room_id: item.exam_room_id } }).then((data) => {
+                                        console.log(item.exam_room_id)
+                                        let examRoomObj = Object.assign({}, {
+                                            exam_room_id: data.dataValues.exam_room_id,
+                                            room_place: data.dataValues.room_place,
+                                            computer_max_amount: data.dataValues.computer_max_amount,
+                                            registered_amount: registered_amount,
+                                            room_name: data.dataValues.room_name
+                                        })
+                                        examRoom.push(examRoomObj)
+                                    })
+                                        .then(ExamShift.findOne({ where: { exam_shift_id: item.exam_shift_id } }).then((data) => {
+                                            let examShiftObj = Object.assign({}, {
+                                                exam_shift_id: data.dataValues.exam_shift_id,
+                                                exam_shift_name: data.dataValues.exam_shift_name,
+                                                date: item.date,
+                                                start_time: data.dataValues.start_time,
+                                                end_time: data.dataValues.end_time
+                                            })
+                                            examShift.push(examShiftObj)
+                                        })
+                                            .then(() => {
+                                                scheduleData = {
+                                                    "subject": subject,
+                                                    "exam_room": examRoom,
+                                                    "exam_shift": examShift
+                                                }
+                                                schedule.push(scheduleData)
+
+                                                resultData = [{
+                                                    exam: exam,
+                                                    schedule: schedule
+                                                }]
+                                                subject = [], examRoom = [], examShift = []
+
+                                                if (index == item.length - 1) {
+                                                    res.status(200).json({
+                                                        success: true,
+                                                        data: resultData,
+                                                        message: `Get all exam schedules of student ${requestData.student_id} from database`
+                                                    })
+                                                }
+                                            })
+                                        ))
+                                ))
+                })
+            })
+        }
+        )
     })
 }
 

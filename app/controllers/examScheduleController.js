@@ -25,7 +25,7 @@ ExamScheduleController.createNewExamSchedule = function (req, res) {
             exam_id: req.body.exam_id
         }
 
-        ExamSchedule.findOne({ where: { exam_shift_id: newExamSchedule.exam_shift_id, subject_id: newExamSchedule.subject_id, exam_room_id: newExamSchedule.exam_room_id, date: newExamSchedule.date } }).then(function (data) {
+        ExamSchedule.findOne({ where: { exam_shift_id: newExamSchedule.exam_shift_id, exam_room_id: newExamSchedule.exam_room_id, date: newExamSchedule.date } }).then(function (data) {
             if (data) {
                 res.status(403).json({
                     success: false,
@@ -221,11 +221,6 @@ ExamScheduleController.updateExamScheduleById = function (req, res) {
             })
         })
     })
-}
-
-// TODO
-ExamScheduleController.getAllStudentSchedule = function (req, res) {
-
 }
 
 ExamScheduleController.deleteExamScheduleById = function (req, res) {
