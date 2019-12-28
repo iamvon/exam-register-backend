@@ -122,7 +122,6 @@ SubjectController.updateSubjectById = function (req, res) {
             data.update({
                 subject_name: updateSubject.subject_name,
                 subject_code: req.body.subject_code,
-                exam_id: req.body.exam_id,
                 updated_at: Sequelize.literal('CURRENT_TIMESTAMP')
             }).then(function () {
                 res.status(200).json({
