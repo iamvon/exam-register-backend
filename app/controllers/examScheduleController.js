@@ -16,35 +16,51 @@ let ExamScheduleController = {}
 
 ExamScheduleController.createNewExamSchedule = function (req, res) {
     db.sync().then(function () {
-        let newExamSchedule = {
-            exam_schedule_id: uuid(),
-            exam_shift_id: req.body.exam_shift_id,
-            date: req.body.date,
-            subject_id: req.body.subject_id,
-            exam_room_id: req.body.exam_room_id,
-            exam_id: req.body.exam_id
-        }
+        let examScheduleInputData = JSON.parse(JSON.stringify(req.body))
 
-        ExamSchedule.findOne({ where: { exam_shift_id: newExamSchedule.exam_shift_id, exam_room_id: newExamSchedule.exam_room_id, date: newExamSchedule.date } }).then(function (data) {
-            if (data) {
-                res.status(403).json({
-                    success: false,
-                    data: {},
-                    message: 'This exam schedule already exists!'
-                })
-                return
+        const examSchedulePromises = examScheduleInputData.map(examSchedule => {
+            let newExamSchedule = {
+                exam_schedule_id: uuid(),
+                exam_shift_id: examSchedule.exam_shift_id,
+                date: examSchedule.date,
+                subject_id: examSchedule.subject_id,
+                exam_room_id: examSchedule.exam_room_id,
+                exam_id: examSchedule.exam_id
             }
 
-            // creating new exam schedule
-            return ExamSchedule.create(newExamSchedule).then(function () {
+            return ExamSchedule.findOne({ where: { exam_shift_id: newExamSchedule.exam_shift_id, exam_room_id: newExamSchedule.exam_room_id, date: newExamSchedule.date } }).then(function (data) {
+                if (data) {
+                    console.log('This exam schedule already exists!')
+                    return {}
+                }
+
+                // creating new exam schedule
+                return ExamSchedule.create(newExamSchedule).then(function () {
+                    console.log(`New exam schedule ${newExamSchedule.exam_schedule_id} created!`)
+                    return Object.assign({}, {
+                        exam_schedule_id: newExamSchedule.exam_schedule_id
+                    })
+                })
+            })
+        })
+
+        Promise.all(examSchedulePromises).then(examSchedule => {
+            let newExamScheduleArray = examSchedule.filter(value => Object.keys(value).length !== 0);
+            if (newExamScheduleArray.length > 0) {
                 res.status(200).json({
                     success: true,
                     data: {
-                        exam_schedule_id: newExamSchedule.exam_schedule_id
+                        created_list: newExamScheduleArray
                     },
-                    message: 'New exam schedule created!',
-                });
-            })
+                    message: `New exam schedule list created!`,
+                })
+            } else {
+                res.status(403).json({
+                    success: false,
+                    data: {},
+                    message: `Error when creating new exam schedule, please check the console!`
+                })
+            }
         })
     })
 }
