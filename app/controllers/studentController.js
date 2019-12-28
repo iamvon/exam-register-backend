@@ -311,7 +311,15 @@ StudentController.getAllStudentSchedule = function (req, res) {
                     schedule: schedule
                 }]
                 studentExamSchedule.forEach((item, index) => {
-                    console.log(item.subject_id )
+                    let student = [].concat.apply([], allStudentSubjectObj.filter((studentScheduleObj) => {
+                        return studentScheduleObj.subject_id === item.subject_id
+                    }))[0]
+
+                    let can_join_exam = student.can_join_exam
+                    let registeredExamSchedule = false
+                    if(item.exam_schedule_id === student.exam_schedule_id) {
+                        registeredExamSchedule = true
+                    }
 
                     exam = [], subject = [], examRoom = [], examShift = [], registered_amount = 0
                     StudentSubject.findAll({ where: { exam_schedule_id: item.exam_schedule_id } }).then(registeredCount => {
@@ -333,12 +341,11 @@ StudentController.getAllStudentSchedule = function (req, res) {
                                     let subjectObj = Object.assign({}, {
                                         subject_id: data.dataValues.subject_id,
                                         subject_code: data.dataValues.subject_code,
-                                        subject_name: data.dataValues.subject_name
+                                        subject_name: data.dataValues.subject_name,
                                     })
                                     subject.push(subjectObj)
                                 })
                                     .then(ExamRoom.findOne({ where: { exam_room_id: item.exam_room_id } }).then((data) => {
-                                        console.log(item.exam_room_id)
                                         let examRoomObj = Object.assign({}, {
                                             exam_room_id: data.dataValues.exam_room_id,
                                             room_place: data.dataValues.room_place,
@@ -360,9 +367,14 @@ StudentController.getAllStudentSchedule = function (req, res) {
                                         })
                                             .then(() => {
                                                 scheduleData = {
-                                                    "subject": subject,
-                                                    "exam_room": examRoom,
-                                                    "exam_shift": examShift
+                                                    exam_schedule_id: item.exam_schedule_id,
+                                                    student: {
+                                                        can_join_exam: can_join_exam,
+                                                        registered_exam_schedule: registeredExamSchedule 
+                                                    },
+                                                    subject: subject,
+                                                    exam_room: examRoom,
+                                                    exam_shift: examShift
                                                 }
                                                 schedule.push(scheduleData)
 
@@ -372,7 +384,7 @@ StudentController.getAllStudentSchedule = function (req, res) {
                                                 }]
                                                 subject = [], examRoom = [], examShift = []
 
-                                                if (index == item.length - 1) {
+                                                if (index == studentExamSchedule.length - 1) {
                                                     res.status(200).json({
                                                         success: true,
                                                         data: resultData,

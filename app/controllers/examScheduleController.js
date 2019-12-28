@@ -126,7 +126,7 @@ ExamScheduleController.getAllExamScheduleByExamId = function (req, res) {
                 })
                 return
             }
-
+            
             data.forEach((item, index) => {
                 exam = [], subject = [], examRoom = [], examShift = [], registered_amount = 0
                 StudentSubject.findAll({ where: { exam_schedule_id: item.dataValues.exam_schedule_id } }).then(registeredCount => {
