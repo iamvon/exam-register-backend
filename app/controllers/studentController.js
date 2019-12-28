@@ -314,7 +314,7 @@ StudentController.getAllStudentSchedule = function (req, res) {
                     let student = [].concat.apply([], allStudentSubjectObj.filter((studentScheduleObj) => {
                         return studentScheduleObj.subject_id === item.subject_id
                     }))[0]
-
+                    let studentId = student.student_id
                     let can_join_exam = student.can_join_exam
                     let registeredExamSchedule = false
                     if(item.exam_schedule_id === student.exam_schedule_id) {
@@ -369,6 +369,7 @@ StudentController.getAllStudentSchedule = function (req, res) {
                                                 scheduleData = {
                                                     exam_schedule_id: item.exam_schedule_id,
                                                     student: {
+                                                        student_id: studentId,
                                                         can_join_exam: can_join_exam,
                                                         registered_exam_schedule: registeredExamSchedule 
                                                     },
